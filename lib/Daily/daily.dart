@@ -36,7 +36,7 @@ class _DailyState extends State<Daily> {
                   child: Column(
                     children: [
                        Icon(
-                        Icons.clear,
+                        Icons.clear, //test
                         size: 20,
                         color: Colors.black,
                       ),

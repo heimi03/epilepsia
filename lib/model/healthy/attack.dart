@@ -27,7 +27,7 @@ class Attack {
         return {
       'id': id,
       'datum': datum,
-      'dauer': dauer,
+      'dauer': dauer,//test
       'anfallsart': anfallsart, //test
       'symptome': _symptome, //test
       'notizen' : notizen, // test
