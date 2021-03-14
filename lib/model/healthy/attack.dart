@@ -28,7 +28,7 @@ class Attack {
       'id': id,
       'datum': datum,
       'dauer': dauer,
-      'anfallsart': anfallsart,
+      'anfallsart': anfallsart, //test
       'symptome': _symptome, //test
       'notizen' : notizen, // test
     };
