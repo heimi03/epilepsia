@@ -29,7 +29,7 @@ class Attack {
       'datum': datum,
       'dauer': dauer,
       'anfallsart': anfallsart,
-      'symptome': _symptome,
+      'symptome': _symptome, //test
       'notizen' : notizen,
     };
   }
