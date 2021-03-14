@@ -30,7 +30,7 @@ class Attack {
       'dauer': dauer,
       'anfallsart': anfallsart,
       'symptome': _symptome, //test
-      'notizen' : notizen,
+      'notizen' : notizen, // test
     };
   }
 }
