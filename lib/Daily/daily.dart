@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../widgetsport.dart';
+
 class Daily extends StatefulWidget {
    Daily({Key key,}) : super(key: key);
   @override
@@ -166,28 +168,28 @@ DropdownButton(
             ),
 
    Row(children: [
-kachelWidget('Joggen',Icon(Icons.directions_run,size: 30,),null),
-kachelWidget('Gehen',Icon(Icons.directions_walk,size: 30,),null),
+ Widgetsport(widget.key,'Joggen',Icon(Icons.directions_run,size: 30,),Colors.blue,null),
+ Widgetsport(widget.key,'Gehen',Icon(Icons.directions_walk,size: 30,),Colors.blue,null),
    ],),
    Row(children: [
-kachelWidget('Reiten',Icon(Icons.landscape,size: 30,),null),
-kachelWidget('Fahrrad fahren',Icon(Icons.directions_bike,size: 30,),null),
+ Widgetsport(widget.key,'Reiten',Icon(Icons.landscape,size: 30,),Colors.blue,null),
+ Widgetsport(widget.key,'Fahrrad fahren',Icon(Icons.directions_bike,size: 30,),Colors.blue,null),
    ],),
    Row(children: [
-kachelWidget('Schwimmen',Icon(Icons.pool,size: 30,),null),
-kachelWidget('Golfen',Icon(Icons.golf_course,size: 30,),null),
+ Widgetsport(widget.key,'Schwimmen',Icon(Icons.pool,size: 30,),Colors.blue,null),
+ Widgetsport(widget.key,'Golfen',Icon(Icons.golf_course,size: 30,),Colors.blue,null),
    ],),
    Row(children: [
-kachelWidget('Fußball',Icon(Icons.sports_soccer,size: 30,),null),
-kachelWidget('Gymnastik',Icon(Icons.alarm_on,size: 30,),null),
+ Widgetsport(widget.key,'Fußball',Icon(Icons.sports_soccer,size: 30,),Colors.blue,null),
+ Widgetsport(widget.key,'Gymnastik',Icon(Icons.alarm_on,size: 30,),Colors.blue,null),
    ],),
    Row(children: [
-kachelWidget('Tischtennis',Icon(Icons.sports_basketball,size: 30,),null),
-kachelWidget('Fitness',Icon(Icons.fitness_center,size: 30,),null),
+ Widgetsport(widget.key,'Tischtennis',Icon(Icons.sports_basketball,size: 30,),Colors.blue,null),
+ Widgetsport(widget.key, 'Fitness',Icon(Icons.fitness_center,size: 30,),Colors.blue,null),
    ],),
     Row(children: [
-kachelWidget('Tennis',Icon(Icons.sports_tennis,size: 30,),null),
-kachelWidget('Ski fahren',Icon(Icons.ac_unit,size: 30,),null),
+ Widgetsport(widget.key,'Tennis',Icon(Icons.sports_tennis,size: 30,),Colors.blue,null),
+ Widgetsport(widget.key,'Ski fahren',Icon(Icons.ac_unit,size: 30,),Colors.blue,null),
    ],),
 
    
@@ -199,40 +201,6 @@ kachelWidget('Ski fahren',Icon(Icons.ac_unit,size: 30,),null),
     );
   }}
 
-Widget kachelWidget(String text, Icon icon, String string){
-  return Expanded(
-              child: Container(
-                decoration: BoxDecoration(color: Colors.indigo[100],border: Border.all(),borderRadius: BorderRadius.all(Radius.circular(20)),),
-              
-                margin:
-                    EdgeInsets.only(top: 25, bottom: 2, left: 15, right: 15),
-                height: 90,
-                child: TextButton(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-        icon: icon,
-        color: Colors.indigo[700],
-        
-        onPressed: () {
-          functionToDatabase(string);
-        },
-      ),
-                      Text(
-                        text,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ],
-                  ),
-                  onPressed: () {
-                     functionToDatabase(string);
-                  },
-                ),
-              ),
-            );
-}
 
 void functionToDatabase(String string){
   //if(time!=null){

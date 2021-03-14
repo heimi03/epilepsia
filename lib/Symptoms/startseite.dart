@@ -1,13 +1,20 @@
 import 'package:epilepsia/config/farben.dart';
+import 'package:epilepsia/model/healthy/status.dart';
+import 'package:epilepsia/model/healthy/stimmung.dart';
+import 'package:epilepsia/model/healthy/symptome.dart';
+import 'package:epilepsia/widget.dart';
 import 'package:flutter/material.dart';
 
 class Startseite extends StatefulWidget {
+  const Startseite({Key key}) : super(key: key);
   @override
   _StartseiteState createState() => _StartseiteState();
 }
 
 class _StartseiteState extends State<Startseite> {
   final timeController = TextEditingController();
+
+  List<StatusIcons> statusList = <StatusIcons>[];
 
   @override
   void dispose() {
@@ -52,38 +59,65 @@ class _StartseiteState extends State<Startseite> {
                   ),
                   Row(
                     children: [
-                      boxWidget(
-                          'Glücklich',
-                          Icon(
-                            Icons.sentiment_very_satisfied,
-                            size: 30,
-                          ),
-                          Colors.cyan[400],
-                          null),
-                      boxWidget(
-                          'Neutral',
-                          Icon(
-                            Icons.sentiment_neutral,
-                            size: 30,
-                          ),
-                          Colors.cyan[400],
-                          null),
-                      boxWidget(
-                          'Traurig',
-                          Icon(
-                            Icons.sentiment_dissatisfied,
-                            size: 30,
-                          ),
-                          Colors.cyan[400],
-                          null),
-                      boxWidget(
-                          'Gereizt',
-                          Icon(
-                            Icons.sentiment_very_dissatisfied,
-                            size: 30,
-                          ),
-                          Colors.cyan[400],
-                          null),
+                      StatusWidget(
+                        widget.key,
+                        'stimmung',
+                        'Glücklich',
+                        61668,
+                        Colors.cyan[400],
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'stimmung',
+                        'Neutral',
+                        61668,
+                        Colors.cyan[400],
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'stimmung',
+                        'Traurig',
+                        61668,
+                        Colors.cyan[400],
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'stimmung',
+                        'Gereizt',
+                        61668,
+                        Colors.cyan[400],
+                        statusList,
+                      ),
+                      // Widget1(
+                      //     widget.key,
+                      //     'Neutral',
+                      //     Icon(
+                      //       Icons.sentiment_neutral,
+                      //       size: 30,
+                      //     ),
+                      //     Colors.cyan[400],
+                      //     null),
+                      // Widget1(
+                      //     widget.key,
+                      //     'Traurig',
+                      //     Icon(
+                      //       Icons.sentiment_dissatisfied,
+                      //       size: 30,
+                      //     ),
+                      //     Colors.cyan[400],
+                      //     null),
+                      // Widget1(
+                      //     widget.key,
+                      //     'Gereizt',
+                      //     Icon(
+                      //       Icons.sentiment_very_dissatisfied,
+                      //       size: 30,
+                      //     ),
+                      //     Colors.cyan[400],
+                      //     null),
                     ],
                   ),
                   Divider(
@@ -101,38 +135,74 @@ class _StartseiteState extends State<Startseite> {
                   ),
                   Row(
                     children: [
-                      boxWidget(
-                          'Zucken',
-                          Icon(
-                            Icons.bolt,
-                            size: 30,
-                          ),
-                          Colors.lightBlue[200],
-                          null),
-                      boxWidget(
-                          'Bewusstlos',
-                          Icon(
-                            Icons.snooze,
-                            size: 30,
-                          ),
-                          Colors.lightBlue[200],
-                          null),
-                      boxWidget(
-                          'Krämpfe',
-                          Icon(
-                            Icons.warning,
-                            size: 30,
-                          ),
-                          Colors.lightBlue[200],
-                          null),
-                      boxWidget(
-                          'Fieber',
-                          Icon(
-                            Icons.thermostat_outlined,
-                            size: 30,
-                          ),
-                          Colors.lightBlue[200],
-                          null),
+                      StatusWidget(
+                        widget.key,
+                        'symptome',
+                        'testS',
+                        61668,
+                        Colors.cyan[400],
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'symptome',
+                        'Neutral',
+                        61668,
+                        Colors.cyan[400],
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'symptome',
+                        'Traurig',
+                        61668,
+                        Colors.cyan[400],
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'symptome',
+                        'Gereizt',
+                        61668,
+                        Colors.cyan[400],
+                        statusList,
+                      ),
+                      // Widget1(
+                      //     widget.key,
+                      //     'Zucken',
+                      //     Icon(
+                      //       Icons.bolt,
+                      //       size: 30,
+                      //     ),
+                      //     Colors.lightBlue[200],
+                      //     null),
+                      // Widget1(
+                      //     widget.key,
+                      //     'Bewusstlos',
+                      //     Icon(
+                      //       Icons.snooze,
+                      //       size: 30,
+                      //     ),
+                      //     Colors.lightBlue[200],
+                      //     null),
+                      // Widget1(
+                      //     widget.key,
+                      //     'Krämpfe',
+                      //     Icon(
+                      //       Icons.warning,
+                      //       size: 30,
+                      //     ),
+                      //     Colors.lightBlue[200],
+                      //     null),
+                      // Widget1(
+                      //     widget.key,
+                      //     'Fieber',
+                      //     Icon(
+                      //       Icons.thermostat_outlined,
+                      //       size: 30,
+                      //     ),
+                      //     Colors.lightBlue[200],
+                      //     null),
                     ],
                   ),
                   Divider(
@@ -150,60 +220,110 @@ class _StartseiteState extends State<Startseite> {
                   ),
                   Row(
                     children: [
-                      boxWidget(
-                          'Entspannt',
-                          Icon(
-                            Icons.wb_sunny,
-                            size: 30,
-                          ),
-                          Colors.indigo[200],
-                          null),
-                      boxWidget(
-                          'Unruhe',
-                          Icon(
-                            Icons.wb_cloudy,
-                            size: 30,
-                          ),
-                          Colors.indigo[200],
-                          null),
-                      boxWidget(
-                          'Anspannung',
-                          Icon(
-                            Icons.bolt,
-                            size: 30,
-                          ),
-                          Colors.indigo[200],
-                          null),
-                      boxWidget(
-                          'Stress',
-                          Icon(
-                            Icons.flash_on,
-                            size: 30,
-                          ),
-                          Colors.indigo[200],
-                          null),
+                      StatusWidget(
+                        widget.key,
+                        'stress',
+                        'test',
+                        61668,
+                        Colors.cyan[400],
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'stress',
+                        'Neutral',
+                        61668,
+                        Colors.cyan[400],
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'stress',
+                        'Traurig',
+                        61668,
+                        Colors.cyan[400],
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'stress',
+                        'Gereizt',
+                        61668,
+                        Colors.cyan[400],
+                        statusList,
+                      ),
+                      // Widget1(
+                      //     widget.key,
+                      //     'Entspannt',
+                      //     Icon(
+                      //       Icons.wb_sunny,
+                      //       size: 30,
+                      //     ),
+                      //     Colors.indigo[200],
+                      //     null),
+                      // Widget1(
+                      //     widget.key,
+                      //     'Unruhe',
+                      //     Icon(
+                      //       Icons.wb_cloudy,
+                      //       size: 30,
+                      //     ),
+                      //     Colors.indigo[200],
+                      //     null),
+                      // Widget1(
+                      //     widget.key,
+                      //     'Anspannung',
+                      //     Icon(
+                      //       Icons.bolt,
+                      //       size: 30,
+                      //     ),
+                      //     Colors.indigo[200],
+                      //     null),
+                      // Widget1(
+                      //     widget.key,
+                      //     'Stress',
+                      //     Icon(
+                      //       Icons.flash_on,
+                      //       size: 30,
+                      //     ),
+                      //     Colors.indigo[200],
+                      //     null),
                     ],
                   ),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      // Respond to button press
-                    },
-                    icon: Icon(Icons.add, size: 18),
-                    label: Text("Hinzufügen"),
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.grey[800],
-                      onPrimary: Colors.white,
-                      onSurface: Colors.grey,
+                  Visibility(
+                    visible: true,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        print(statusList);
+                        saveStatus(statusList);
+                      },
+                      icon: Icon(Icons.add, size: 18),
+                      label: Text("Hinzufügen"),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.grey[800],
+                        onPrimary: Colors.white,
+                        onSurface: Colors.grey,
+                      ),
                     ),
                   )
                 ],
               ))),
     );
   }
+
+  void saveStatus(List<StatusIcons> statusList) {
+    StatusIcons stimmung =
+        statusList.firstWhere((element) => element.id == "stimmung");
+        StatusIcons symptome =
+        statusList.firstWhere((element) => element.id == "symptome");
+        StatusIcons stress =
+        statusList.firstWhere((element) => element.id == "stress");
+    Status status = new Status(id: null, stimmung: stimmung, symptome: symptome, stress: stress);
+    print(status.toJson());
+  }
 }
 
 Widget boxWidget(String text, Icon icon, Color color, String string) {
-  bool _hasBeenPressed = false;
   return Expanded(
     child: Container(
       margin: EdgeInsets.only(top: 20, bottom: 5, left: 10, right: 10),
@@ -218,17 +338,11 @@ Widget boxWidget(String text, Icon icon, Color color, String string) {
             ),
             child: IconButton(
               icon: icon,
-              //color: _iconcolor,
               onPressed: () {
-                //setState(() {
-                //_iconcolor = Colors.green;
-           //},)           
                 //functionToDatabase(string);
               },
             ),
           ),
-
-          
           Text(
             text,
             style: TextStyle(fontSize: 12),

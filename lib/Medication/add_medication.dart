@@ -1,4 +1,6 @@
+import 'package:epilepsia/config/farben.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class AddMedication extends StatefulWidget {
   AddMedication({
@@ -71,10 +73,32 @@ class _AddMedicationState extends State<AddMedication> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Image.asset('assets/image/pill.png', height: 30, width: 30),
-                Image.asset('assets/image/pill2.png', height: 30, width: 30),
-                Image.asset('assets/image/pill3.png', height: 30, width: 30),
-                Image.asset('assets/image/pill4.png', height: 30, width: 30),
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                    });
+                  },
+                  icon: Image.asset(
+                    'assets/image/pill.png',
+                    height: 30,
+                    width: 30,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {  },
+                  icon: Image.asset('assets/image/pill2.png',
+                      height: 30, width: 30),
+                ),
+                IconButton(
+                  onPressed: () {  },
+                  icon: Image.asset('assets/image/pill3.png',
+                      height: 30, width: 30),
+                ),
+                IconButton(
+                  onPressed: () {  },
+                  icon: Image.asset('assets/image/pill4.png',
+                      height: 30, width: 30),
+                ),
               ],
             ),
             Align(
@@ -86,61 +110,51 @@ class _AddMedicationState extends State<AddMedication> {
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  margin:
-                      EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-                  height: 30,
-                  width: 30,
-                  color: Colors.blue,
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-                  height: 30,
-                  width: 30,
-                  color: Colors.green,
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-                   height: 30,
-                  width: 30,
-                  color: Colors.red,
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-                   height: 30,
-                  width: 30,
-                  color: Colors.yellow,
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-                   height: 30,
-                  width: 30,
-                  color: Colors.orange,
-                ),
-            ]
-            ),
-              
-              ElevatedButton.icon(
-                onPressed: () {
-                  // Respond to button press
-                },
-                icon: Icon(Icons.add, size: 18),
-                label: Text("Hinzufügen"),
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.blue[200],
-                  onPrimary: Colors.white,
-                  onSurface: Colors.grey,
-                ),
-              )
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Container(
+                margin: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                height: 30,
+                width: 30,
+                color: Colors.blue,
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                height: 30,
+                width: 30,
+                color: Colors.green,
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                height: 30,
+                width: 30,
+                color: Colors.red,
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                height: 30,
+                width: 30,
+                color: Colors.yellow,
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                height: 30,
+                width: 30,
+                color: Colors.orange,
+              ),
             ]),
-          
+            ElevatedButton.icon(
+              onPressed: () {
+                // Respond to button press
+              },
+              icon: Icon(Icons.add, size: 18),
+              label: Text("Hinzufügen"),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.blue[200],
+                onPrimary: Colors.white,
+                onSurface: Colors.grey,
+              ),
+            )
+          ]),
     );
   }
 }

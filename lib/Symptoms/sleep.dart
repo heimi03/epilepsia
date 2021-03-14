@@ -1,6 +1,8 @@
 import 'package:epilepsia/Symptoms/startseite.dart';
 import 'package:flutter/material.dart';
 
+import '../widget.dart';
+
 class Sleep extends StatefulWidget {
   Sleep({
     Key key,
@@ -110,43 +112,44 @@ Divider(height: 15,thickness: 5,),
             ),
             Row(
               children: [
-                boxWidget(
-                    'Ausgeruht',
-                    Icon(
-                      Icons.wb_sunny,
-                      size: 30,
-                    ),
-                    Colors.blue,
-                    null),
-                boxWidget(
-                    'Unruhe',
-                    Icon(
-                      Icons.wb_cloudy,
-                      size: 30,
-                    ),
-                    Colors.blue,
-                    null),
-                boxWidget(
-                    'Insomnie',
-                    Icon(
-                      Icons.nights_stay,
-                      size: 30,
-                    ),
-                    Colors.blue,
-                    null),
-                boxWidget(
-                    'Albträume',
-                    Icon(
-                      Icons.flash_on,
-                      size: 30,
-                    ),
-                    Colors.blue,
-                    null),
+                //  Widget1(widget.key,
+                //     'Ausgeruht',
+                //     Icon(
+                //       Icons.wb_sunny,
+                //       size: 30,
+                //     ),
+                //     Colors.blue,
+                //     null),
+                //  Widget1(widget.key,
+                //     'Unruhe',
+                //     Icon(
+                //       Icons.wb_cloudy,
+                //       size: 30,
+                //     ),
+                //     Colors.blue,
+                //     null),
+                //  Widget1(widget.key,
+                //     'Insomnie',
+                //     Icon(
+                //       Icons.nights_stay,
+                //       size: 30,
+                //     ),
+                //     Colors.blue,
+                //     null),
+                //  Widget1(widget.key,
+                //     'Albträume',
+                //     Icon(
+                //       Icons.flash_on,
+                //       size: 30,
+                //     ),
+                //     Colors.blue,
+                //     null),
               ],
             ),
 
         ElevatedButton.icon(
                 onPressed: () {
+                  
                   // Respond to button press
                 },
                 icon: Icon(Icons.add, size: 18),

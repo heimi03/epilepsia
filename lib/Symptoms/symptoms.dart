@@ -22,7 +22,7 @@ class _SymptomsState extends State<Symptoms> {
         indicatorSize: TabBarIndicatorSize.label,
         labelColor: Colors.white,
         tabs: [
-          Tab(icon: Icon(Icons.coronavirus), text: 'Symptome',),
+          Tab(icon: Icon(Icons.coronavirus), text: 'Status',),
           Tab(icon: Icon(Icons.warning), text: 'Anfall',),
           Tab(icon: Icon(Icons.hotel), text: 'Schlaf'),
         ],
@@ -31,7 +31,7 @@ class _SymptomsState extends State<Symptoms> {
   body: TabBarView(
            children:[
              Startseite(),
-             Attack(),
+             Attackwidget(),
              Sleep(), ]
  
   ),
