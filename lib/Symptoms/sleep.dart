@@ -1,7 +1,8 @@
 import 'package:epilepsia/Symptoms/startseite.dart';
+import 'package:epilepsia/model/healthy/stimmung.dart';
 import 'package:flutter/material.dart';
 
-import '../widget.dart';
+import '../config/widget/widget.dart';
 
 class Sleep extends StatefulWidget {
   Sleep({
@@ -14,6 +15,7 @@ class Sleep extends StatefulWidget {
 class _SleepState extends State<Sleep> {
   final timeController = TextEditingController();
   final timeController1 = TextEditingController();
+   List<StatusIcons> statusList = <StatusIcons>[];
 
 TimeOfDay startDate;
 TimeOfDay endDate;
@@ -112,38 +114,38 @@ Divider(height: 15,thickness: 5,),
             ),
             Row(
               children: [
-                //  Widget1(widget.key,
-                //     'Ausgeruht',
-                //     Icon(
-                //       Icons.wb_sunny,
-                //       size: 30,
-                //     ),
-                //     Colors.blue,
-                //     null),
-                //  Widget1(widget.key,
-                //     'Unruhe',
-                //     Icon(
-                //       Icons.wb_cloudy,
-                //       size: 30,
-                //     ),
-                //     Colors.blue,
-                //     null),
-                //  Widget1(widget.key,
-                //     'Insomnie',
-                //     Icon(
-                //       Icons.nights_stay,
-                //       size: 30,
-                //     ),
-                //     Colors.blue,
-                //     null),
-                //  Widget1(widget.key,
-                //     'Albträume',
-                //     Icon(
-                //       Icons.flash_on,
-                //       size: 30,
-                //     ),
-                //     Colors.blue,
-                //     null),
+                      StatusWidget(
+                        widget.key,
+                        'schlaf',
+                        'Ausgeruht',
+                        0xeae2,
+                        Colors.blue,
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'schlaf',
+                        'Neutral',
+                        0xe42d,
+                        Colors.blue,
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'schlaf',
+                        'Insomnie',
+                        59566, 
+                        Colors.blue,
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'schlaf',
+                        'Albträume',
+                        59222, 
+                        Colors.blue,
+                        statusList,
+                      ),
               ],
             ),
 

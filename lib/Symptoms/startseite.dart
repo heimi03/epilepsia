@@ -2,8 +2,15 @@ import 'package:epilepsia/config/farben.dart';
 import 'package:epilepsia/model/healthy/status.dart';
 import 'package:epilepsia/model/healthy/stimmung.dart';
 import 'package:epilepsia/model/healthy/symptome.dart';
-import 'package:epilepsia/widget.dart';
+import 'package:epilepsia/config/widget/widget.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+
+FirebaseFirestore firestore = FirebaseFirestore.instance;
+final timeController = TextEditingController();
+final dateController = TextEditingController();
 
 class Startseite extends StatefulWidget {
   const Startseite({Key key}) : super(key: key);
@@ -12,24 +19,44 @@ class Startseite extends StatefulWidget {
 }
 
 class _StartseiteState extends State<Startseite> {
-  final timeController = TextEditingController();
-
   List<StatusIcons> statusList = <StatusIcons>[];
 
   @override
   void dispose() {
     // Clean up the controller when the widget is removed
     timeController.dispose();
+    dateController.dispose();
     super.dispose();
   }
 
   Widget build(BuildContext context) {
+    DateFormat format = DateFormat('dd.MM.yyyy');
     return Scaffold(
       body: SingleChildScrollView(
           child: Container(
               margin: const EdgeInsets.all(15.0),
               child: Column(
                 children: [
+                  Container(
+                    margin: const EdgeInsets.all(15.0),
+                    child: TextField(
+                      readOnly: true,
+                      controller: dateController,
+                      decoration: InputDecoration(
+                          hoverColor: Colors.blue[200],
+                          hintText: 'Tag auswählen'),
+                      onTap: () async {
+                        var date = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(1900),
+                            lastDate: DateTime(2100));
+
+                        dateController.value =
+                            TextEditingValue(text: format.format(date));
+                      },
+                    ),
+                  ),
                   TextField(
                     readOnly: true,
                     controller: timeController,
@@ -63,7 +90,7 @@ class _StartseiteState extends State<Startseite> {
                         widget.key,
                         'stimmung',
                         'Glücklich',
-                        61668,
+                        59842,
                         Colors.cyan[400],
                         statusList,
                       ),
@@ -71,7 +98,7 @@ class _StartseiteState extends State<Startseite> {
                         widget.key,
                         'stimmung',
                         'Neutral',
-                        61668,
+                        59840,
                         Colors.cyan[400],
                         statusList,
                       ),
@@ -79,7 +106,7 @@ class _StartseiteState extends State<Startseite> {
                         widget.key,
                         'stimmung',
                         'Traurig',
-                        61668,
+                        58361,
                         Colors.cyan[400],
                         statusList,
                       ),
@@ -87,37 +114,10 @@ class _StartseiteState extends State<Startseite> {
                         widget.key,
                         'stimmung',
                         'Gereizt',
-                        61668,
+                        58365,
                         Colors.cyan[400],
                         statusList,
                       ),
-                      // Widget1(
-                      //     widget.key,
-                      //     'Neutral',
-                      //     Icon(
-                      //       Icons.sentiment_neutral,
-                      //       size: 30,
-                      //     ),
-                      //     Colors.cyan[400],
-                      //     null),
-                      // Widget1(
-                      //     widget.key,
-                      //     'Traurig',
-                      //     Icon(
-                      //       Icons.sentiment_dissatisfied,
-                      //       size: 30,
-                      //     ),
-                      //     Colors.cyan[400],
-                      //     null),
-                      // Widget1(
-                      //     widget.key,
-                      //     'Gereizt',
-                      //     Icon(
-                      //       Icons.sentiment_very_dissatisfied,
-                      //       size: 30,
-                      //     ),
-                      //     Colors.cyan[400],
-                      //     null),
                     ],
                   ),
                   Divider(
@@ -138,71 +138,35 @@ class _StartseiteState extends State<Startseite> {
                       StatusWidget(
                         widget.key,
                         'symptome',
-                        'testS',
-                        61668,
-                        Colors.cyan[400],
+                        'Zucken',
+                        58869,
+                        Colors.lightBlue[200],
                         statusList,
                       ),
                       StatusWidget(
                         widget.key,
                         'symptome',
-                        'Neutral',
-                        61668,
-                        Colors.cyan[400],
+                        'Bewusstlos',
+                        58419,
+                        Colors.lightBlue[200],
                         statusList,
                       ),
                       StatusWidget(
                         widget.key,
                         'symptome',
-                        'Traurig',
-                        61668,
-                        Colors.cyan[400],
+                        'Krämpfe',
+                        60118,
+                        Colors.lightBlue[200],
                         statusList,
                       ),
                       StatusWidget(
                         widget.key,
                         'symptome',
-                        'Gereizt',
-                        61668,
-                        Colors.cyan[400],
+                        'Fieber',
+                        58534,
+                        Colors.lightBlue[200],
                         statusList,
                       ),
-                      // Widget1(
-                      //     widget.key,
-                      //     'Zucken',
-                      //     Icon(
-                      //       Icons.bolt,
-                      //       size: 30,
-                      //     ),
-                      //     Colors.lightBlue[200],
-                      //     null),
-                      // Widget1(
-                      //     widget.key,
-                      //     'Bewusstlos',
-                      //     Icon(
-                      //       Icons.snooze,
-                      //       size: 30,
-                      //     ),
-                      //     Colors.lightBlue[200],
-                      //     null),
-                      // Widget1(
-                      //     widget.key,
-                      //     'Krämpfe',
-                      //     Icon(
-                      //       Icons.warning,
-                      //       size: 30,
-                      //     ),
-                      //     Colors.lightBlue[200],
-                      //     null),
-                      // Widget1(
-                      //     widget.key,
-                      //     'Fieber',
-                      //     Icon(
-                      //       Icons.thermostat_outlined,
-                      //       size: 30,
-                      //     ),
-                      //     Colors.lightBlue[200],
-                      //     null),
                     ],
                   ),
                   Divider(
@@ -223,71 +187,35 @@ class _StartseiteState extends State<Startseite> {
                       StatusWidget(
                         widget.key,
                         'stress',
-                        'test',
-                        61668,
-                        Colors.cyan[400],
+                        'Entspannt',
+                        60130,
+                        Colors.indigo[200],
                         statusList,
                       ),
                       StatusWidget(
                         widget.key,
                         'stress',
-                        'Neutral',
-                        61668,
-                        Colors.cyan[400],
+                        'Unruhe',
+                        60126,
+                        Colors.indigo[200],
                         statusList,
                       ),
                       StatusWidget(
                         widget.key,
                         'stress',
-                        'Traurig',
-                        61668,
-                        Colors.cyan[400],
+                        'Anspannung',
+                        58869,
+                        Colors.indigo[200],
                         statusList,
                       ),
                       StatusWidget(
                         widget.key,
                         'stress',
-                        'Gereizt',
-                        61668,
-                        Colors.cyan[400],
+                        'Stress',
+                        59222,
+                        Colors.indigo[200],
                         statusList,
                       ),
-                      // Widget1(
-                      //     widget.key,
-                      //     'Entspannt',
-                      //     Icon(
-                      //       Icons.wb_sunny,
-                      //       size: 30,
-                      //     ),
-                      //     Colors.indigo[200],
-                      //     null),
-                      // Widget1(
-                      //     widget.key,
-                      //     'Unruhe',
-                      //     Icon(
-                      //       Icons.wb_cloudy,
-                      //       size: 30,
-                      //     ),
-                      //     Colors.indigo[200],
-                      //     null),
-                      // Widget1(
-                      //     widget.key,
-                      //     'Anspannung',
-                      //     Icon(
-                      //       Icons.bolt,
-                      //       size: 30,
-                      //     ),
-                      //     Colors.indigo[200],
-                      //     null),
-                      // Widget1(
-                      //     widget.key,
-                      //     'Stress',
-                      //     Icon(
-                      //       Icons.flash_on,
-                      //       size: 30,
-                      //     ),
-                      //     Colors.indigo[200],
-                      //     null),
                     ],
                   ),
                   Visibility(
@@ -314,12 +242,14 @@ class _StartseiteState extends State<Startseite> {
   void saveStatus(List<StatusIcons> statusList) {
     StatusIcons stimmung =
         statusList.firstWhere((element) => element.id == "stimmung");
-        StatusIcons symptome =
+    StatusIcons symptome =
         statusList.firstWhere((element) => element.id == "symptome");
-        StatusIcons stress =
+    StatusIcons stress =
         statusList.firstWhere((element) => element.id == "stress");
-    Status status = new Status(id: null, stimmung: stimmung, symptome: symptome, stress: stress);
+    Status status = new Status(
+        id: null, stimmung: stimmung, symptome: symptome, stress: stress);
     print(status.toJson());
+    statusSetup(status);
   }
 }
 
@@ -351,6 +281,20 @@ Widget boxWidget(String text, Icon icon, Color color, String string) {
       ),
     ),
   );
+}
+
+Future<void> statusSetup(Status status) async {
+  CollectionReference statusref =
+      FirebaseFirestore.instance.collection('status');
+  //DocumentReference statusref =FirebaseFirestore.instance.collection('status').doc('Test');
+  statusref.add({
+    'stimmung': status.stimmung.name,
+    'symptome': status.symptome.name,
+    'stress': status.stress.name,
+    'time': timeController.text,
+    'date': dateController.text,
+    'iconstimung': status.stimmung.iconData
+  });
 }
 
 void functionToDatabase(String string) {

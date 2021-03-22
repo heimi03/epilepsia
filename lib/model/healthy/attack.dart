@@ -11,9 +11,10 @@ class Attack {
   Attack({this.id, this.datum, this.dauer, this.symptome, this.anfallsart, this.notizen});
 
   factory Attack.fromJson(Map<String, dynamic> data) {
+    DateTime dateTime = DateTime.parse(data['datum']);
     return Attack(
       id: data['id'],
-      datum: data['datum'],
+      datum: dateTime,
       dauer: data['dauer'],
       anfallsart: data['anfallsart'],
       symptome: StatusIcons.fromJson(data['symptome']),
@@ -26,11 +27,11 @@ class Attack {
     Map _symptome = this.symptome != null ? this.symptome.toJson() : null;
         return {
       'id': id,
-      'datum': datum,
-      'dauer': dauer,//test
-      'anfallsart': anfallsart, //test
-      'symptome': _symptome, //test
-      'notizen' : notizen, // test
+      'datum': datum.toIso8601String(),
+      'dauer': dauer,
+      'anfallsart': anfallsart, 
+      'symptome': _symptome, 
+      'notizen' : notizen, 
     };
   }
 }

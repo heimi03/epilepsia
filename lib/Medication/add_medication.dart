@@ -1,4 +1,6 @@
 import 'package:epilepsia/config/farben.dart';
+import 'package:epilepsia/model/healthy/stimmung.dart';
+import 'package:epilepsia/config/widget/widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -13,6 +15,7 @@ class AddMedication extends StatefulWidget {
 class _AddMedicationState extends State<AddMedication> {
   TextEditingController nameController = TextEditingController();
   String fullName = '';
+   List<StatusIcons> statusList = <StatusIcons>[];
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -70,35 +73,40 @@ class _AddMedicationState extends State<AddMedication> {
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+             Row(
               children: [
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                    });
-                  },
-                  icon: Image.asset(
-                    'assets/image/pill.png',
-                    height: 30,
-                    width: 30,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {  },
-                  icon: Image.asset('assets/image/pill2.png',
-                      height: 30, width: 30),
-                ),
-                IconButton(
-                  onPressed: () {  },
-                  icon: Image.asset('assets/image/pill3.png',
-                      height: 30, width: 30),
-                ),
-                IconButton(
-                  onPressed: () {  },
-                  icon: Image.asset('assets/image/pill4.png',
-                      height: 30, width: 30),
-                ),
+                      StatusWidget(
+                        widget.key,
+                        'pill',
+                        '',
+                        58841,
+                        Colors.blueGrey,
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'pill',
+                        '',
+                        58841,
+                        Colors.blueGrey,
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'pill',
+                        '',
+                        58841, 
+                        Colors.blueGrey,
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'pill',
+                        '',
+                        58841, 
+                        Colors.blueGrey,
+                        statusList,
+                      ),
               ],
             ),
             Align(
@@ -110,41 +118,44 @@ class _AddMedicationState extends State<AddMedication> {
                 ),
               ),
             ),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Container(
-                margin: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-                height: 30,
-                width: 30,
-                color: Colors.blue,
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-                height: 30,
-                width: 30,
-                color: Colors.green,
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-                height: 30,
-                width: 30,
-                color: Colors.red,
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-                height: 30,
-                width: 30,
-                color: Colors.yellow,
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-                height: 30,
-                width: 30,
-                color: Colors.orange,
-              ),
-            ]),
+            Row(
+              children: [
+                      StatusWidget(
+                        widget.key,
+                        'grün',
+                        '',
+                        57594,
+                        Colors.green,
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'blau',
+                        '',
+                        57594,
+                        Colors.blue,
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'gelb',
+                        '',
+                        57594, 
+                        Colors.yellow,
+                        statusList,
+                      ),
+                      StatusWidget(
+                        widget.key,
+                        'rot',
+                        '',
+                        57594, 
+                        Colors.red,
+                        statusList,
+                      ),
+              ],
+            ),
             ElevatedButton.icon(
               onPressed: () {
-                // Respond to button press
               },
               icon: Icon(Icons.add, size: 18),
               label: Text("Hinzufügen"),

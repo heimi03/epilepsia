@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../widgetsport.dart';
+import '../config/widget/widgetsport.dart';
 
 class Daily extends StatefulWidget {
    Daily({Key key,}) : super(key: key);
@@ -13,9 +13,10 @@ String dropdownValue = 'One';
 
 class _DailyState extends State<Daily> {
   final timeController = TextEditingController();
-  int _value = 1;
   TextEditingController nameController = TextEditingController();
   String fullName = '';
+  List<String> sportdauer = <String> ["10 Minuten", "20 Minuten", "30 Minuten", "45 Minuten", "60 Minuten", "90 Minuten"];
+   String _dropDownSportdauer;
   @override
   Widget build(BuildContext context) {
    var now = DateTime.now();
@@ -114,58 +115,22 @@ Align(
               fontWeight: FontWeight.bold,
             ),),
 ),
-DropdownButton(
-            value: _value,
-            items: [
-              DropdownMenuItem(
-                child: Text("20 Minuten"),
-                value: 1,
-              ),
-              DropdownMenuItem(
-                child: Text("30 Minuten"),
-                value: 2,
-              ),
-              DropdownMenuItem(
-                child: Text("45 Minuten"),
-                value: 3,
-              ),
-              DropdownMenuItem(
-                child: Text("60 Minuten"),
-                value: 4,
-              ),
-              DropdownMenuItem(
-                child: Text("90 Minuten"),
-                value: 5,
-              ),
-              DropdownMenuItem(
-                child: Text("120 Minuten"),
-                value: 6,
-              ),
-            ],
- 
-            onChanged: (int value) {
-              setState(() {
-                _value = value;
-              });
-                },
-            ),
-
-            Container(
-              margin: const EdgeInsets.all(15),
-              child: TextField(
-                  controller: nameController,
-                  decoration: 
-                  InputDecoration(
-                     suffixIcon: Icon(Icons.drive_file_rename_outline),
-                    border: OutlineInputBorder(),
-                    labelText: 'Andere Sportarten',
+Container(
+                    margin:
+                        EdgeInsets.only(top: 5, bottom: 5, left: 15, right: 15),
+                    child: DropdownButton(       
+                      hint: _dropDownSportdauer == null           ? Text('Sportdauer')           : 
+                      Text(               _dropDownSportdauer,               
+                      style: TextStyle(color: Colors.blue),             ),       
+                            iconSize: 30.0,       
+                      style: TextStyle(color: Colors.blue),       
+                      items: sportdauer.map(         
+                        (val) {           return 
+                        DropdownMenuItem<String>(             value: val,             
+                        child: Text(val),           );         },       ).toList(),       
+                        onChanged: (val) {         setState(           () 
+                        {             _dropDownSportdauer = val;           },         );       },     ),
                   ),
-                  onChanged: (text) {
-                    setState(() {
-                      fullName = text;
-                    });
-                  }),
-            ),
 
    Row(children: [
  Widgetsport(widget.key,'Joggen',Icon(Icons.directions_run,size: 30,),Colors.blue,null),

@@ -12,6 +12,11 @@ class PlanMedication extends StatefulWidget {
 class _PlanMedicationState extends State<PlanMedication> {
   final dateController = TextEditingController();
   final dateController1 = TextEditingController();
+  List<String> wiederholung = <String>["Täglich", "Wöchentlich", "Monatlich"];
+  String _dropDownWiederholung;
+  final timeController = TextEditingController();
+  final timeController1 = TextEditingController();
+  final timeController2 = TextEditingController();
 
   void dispose() {
     // Clean up the controller when the widget is removed
@@ -24,44 +29,44 @@ class _PlanMedicationState extends State<PlanMedication> {
   TextEditingController nameController = TextEditingController();
   TextEditingController nameController1 = TextEditingController();
   String fullName = '';
-  int _value2 = 1;
-  int _value3 = 1;
+  int itemCount = 0;
   @override
   Widget build(BuildContext context) {
     DateFormat format = DateFormat('dd.MM.yyyy');
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(children: [
-          Container(
-            child: DropdownButton(
-              hint: Text("Anzahl der Pilleneinnahme"),
-              value: _value3,
-              items: [
-                DropdownMenuItem(
-                  child: Text("1"),
-                  value: 1,
-                ),
-                DropdownMenuItem(
-                  child: Text("2"),
-                  value: 2,
-                ),
-                DropdownMenuItem(
-                  child: Text("3"),
-                  value: 3,
-                ),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  _value3 = value;
-                  if (value == "1") {
-                    newdrop();
-                  } else if (value == "2") {
-                    newdrop();
-                  }
-                });
-              },
-            ),
+          Text("Anzahl der Pilleneinnahmen - Uhrzeit auswählen"),
+          IconButton(
+            icon: Icon(Icons.add_alarm),
+            onPressed: () {
+              setState(() {
+                itemCount++;
+              });
+            },
           ),
+          Container(
+            height: 90,
+            child: ListView.builder(
+                itemCount: itemCount,
+                itemBuilder: (BuildContext context, int index) {
+                  return TextField(
+                    readOnly: true,
+                    controller: timeController,
+                    decoration: InputDecoration(
+                        hoverColor: Colors.blue[200],
+                        hintText: 'Uhrzeit auswählen'),
+                    onTap: () async {
+                      var time = await showTimePicker(
+                        initialTime: TimeOfDay.now(),
+                        context: context,
+                      );
+                      timeController.text = time.format(context);
+                    },
+                  );
+                }),
+          ),
+          
           Divider(
             height: 15,
           ),
@@ -80,27 +85,33 @@ class _PlanMedicationState extends State<PlanMedication> {
               VerticalDivider(
                 width: 20,
               ),
-              DropdownButton(
-                value: _value2,
-                items: [
-                  DropdownMenuItem(
-                    child: Text("Täglich"),
-                    value: 1,
-                  ),
-                  DropdownMenuItem(
-                    child: Text("Wöchentlich"),
-                    value: 2,
-                  ),
-                  DropdownMenuItem(
-                    child: Text("Monatlich"),
-                    value: 3,
-                  ),
-                ],
-                onChanged: (int value) {
-                  setState(() {
-                    _value2 = value;
-                  });
-                },
+              Container(
+                margin: EdgeInsets.only(top: 5, bottom: 5, left: 15, right: 15),
+                child: DropdownButton(
+                  hint: _dropDownWiederholung == null
+                      ? Text('')
+                      : Text(
+                          _dropDownWiederholung,
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                  iconSize: 30.0,
+                  style: TextStyle(color: Colors.blue),
+                  items: wiederholung.map(
+                    (val) {
+                      return DropdownMenuItem<String>(
+                        value: val,
+                        child: Text(val),
+                      );
+                    },
+                  ).toList(),
+                  onChanged: (val) {
+                    setState(
+                      () {
+                        _dropDownWiederholung = val;
+                      },
+                    );
+                  },
+                ),
               ),
             ]),
           ),
@@ -171,9 +182,7 @@ class _PlanMedicationState extends State<PlanMedication> {
                 }),
           ),
           ElevatedButton.icon(
-            onPressed: () {
-              // Respond to button press
-            },
+            onPressed: () {},
             icon: Icon(Icons.add, size: 18),
             label: Text("Hinzufügen"),
             style: ElevatedButton.styleFrom(
@@ -186,25 +195,4 @@ class _PlanMedicationState extends State<PlanMedication> {
       ),
     );
   }
-}
-
-Widget newdrop() {
-  int _value4 = 1;
-  new DropdownButton(
-    value: _value4,
-    items: [
-      DropdownMenuItem(
-        child: Text("Uhrzeit"),
-        value: 1,
-      ),
-      DropdownMenuItem(
-        child: Text("2"),
-        value: 2,
-      ),
-      DropdownMenuItem(
-        child: Text("3"),
-        value: 3,
-      ),
-    ],
-  );
 }
