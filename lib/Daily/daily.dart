@@ -1,10 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:epilepsia/Home/home.dart';
+import 'package:epilepsia/model/daily/sport.dart';
+import 'package:epilepsia/model/healthy/stimmung.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import '../config/widget/widgetsport.dart';
 
+FirebaseFirestore firestore = FirebaseFirestore.instance;
+
 class Daily extends StatefulWidget {
-   Daily({Key key,}) : super(key: key);
+  Daily({
+    Key key,
+  }) : super(key: key);
   @override
   _DailyState createState() => _DailyState();
 }
@@ -15,162 +22,291 @@ class _DailyState extends State<Daily> {
   final timeController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   String fullName = '';
-  List<String> sportdauer = <String> ["10 Minuten", "20 Minuten", "30 Minuten", "45 Minuten", "60 Minuten", "90 Minuten"];
-   String _dropDownSportdauer;
+  TimeOfDay timeOfDayTime;
+  List<String> sportdauer = <String>[
+    "10 Minuten",
+    "20 Minuten",
+    "30 Minuten",
+    "45 Minuten",
+    "60 Minuten",
+    "90 Minuten"
+  ];
+  String _dropDownSportdauer;
+  DateTime dateTimeDay;
+  String daySelect = "";
   @override
   Widget build(BuildContext context) {
-   var now = DateTime.now();
-   DateFormat format = DateFormat('dd.MM.yyyy');
-  String day = format.format(now);
+    String format = 'dd.MM.yyyy';
+    // var now = DateTime.now();
+    // DateFormat format = DateFormat('dd.MM.yyyy');
+    // DateTime day = format.format(now);
+     
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.only(top: 30.0),
-            child: Column(
-              children:[
-                Row(
-          children: [
-            Expanded(
-              child: Container(
-                alignment: Alignment.centerLeft,
-                child: TextButton(
-                  child: Column(
-                    children: [
-                       Icon(
-                        Icons.clear, //test
-                        size: 20,
-                        color: Colors.black,
+          child: Column(children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton(
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.clear,
+                            size: 20,
+                            color: Colors.black,
+                          ),
+                        ],
                       ),
-                    ],
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
                   ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
                 ),
-              ),
+                Expanded(
+                  child: Container(
+                      alignment: Alignment.centerRight,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          saveSport(
+                            statusList, timeOfDayTime, _dropDownSportdauer, dateTimeDay,
+                          );
+                        },
+                        icon: Icon(Icons.add, size: 18),
+                        label: Text("Hinzufügen"),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.indigo[200],
+                          onPrimary: Colors.white,
+                          onSurface: Colors.grey,
+                        ),
+                      )),
+                ),
+              ],
             ),
-               Expanded(
-              child: Container(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton.icon(
-  onPressed: () {
-      // Respond to button press
-  },
-  icon: Icon(Icons.add, size: 18),
-  label: Text("Hinzufügen"),
-  style: ElevatedButton.styleFrom(
-      primary: Colors.indigo[200],
-      onPrimary: Colors.white,
-      onSurface: Colors.grey,
-    ),
-)
-              ),
-            ),
-                
-  
-          ],
-        ),
-Align(
-            alignment: Alignment.bottomCenter,
-            child: Text(day,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),),
-),
-Container(
-  margin: const EdgeInsets.all(15),
-  child:   TextField(
-  
+            Container(
+                margin: const EdgeInsets.all(15.0),
+                child: TextFormField(
                   readOnly: true,
-  
-                  controller: timeController,
-  
                   decoration: InputDecoration(
-  
-                      hoverColor: Colors.blue[200],
-  
-                      hintText: 'Zeitpunkt auswählen'),
-  
+                      hoverColor: Colors.blue[200], hintText: (daySelect== "")? "Tag auswählen":daySelect ),
                   onTap: () async {
-  
-                    var time = await showTimePicker(
-  
-                      initialTime: TimeOfDay.now(),
-  
+                    final DateTime picked = await showDatePicker(
                       context: context,
-  
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime(2100),
                     );
-  
-                    timeController.text = time.format(context);
-  
+                    if (picked != null)
+                      setState(() {
+                        dateTimeDay = picked;
+                        DateFormat formatter = DateFormat(format);
+                        daySelect = formatter.format(picked);
+                        print(daySelect);
+                      });
                   },
-  
+                  
                 ),
-),
-Divider(height: 15,),
-Align(
-            alignment: Alignment.bottomCenter,
-            child: Text('Wie lange machst du heute Sport?',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),),
-),
-Container(
-                    margin:
-                        EdgeInsets.only(top: 5, bottom: 5, left: 15, right: 15),
-                    child: DropdownButton(       
-                      hint: _dropDownSportdauer == null           ? Text('Sportdauer')           : 
-                      Text(               _dropDownSportdauer,               
-                      style: TextStyle(color: Colors.blue),             ),       
-                            iconSize: 30.0,       
-                      style: TextStyle(color: Colors.blue),       
-                      items: sportdauer.map(         
-                        (val) {           return 
-                        DropdownMenuItem<String>(             value: val,             
-                        child: Text(val),           );         },       ).toList(),       
-                        onChanged: (val) {         setState(           () 
-                        {             _dropDownSportdauer = val;           },         );       },     ),
-                  ),
+              ),
+            Container(
+              margin: const EdgeInsets.all(15),
+              child: TextField(
+                readOnly: true,
+                controller: timeController,
+                decoration: InputDecoration(
+                    hoverColor: Colors.blue[200],
+                    hintText: 'Zeitpunkt auswählen'),
+                onTap: () async {
+                  var time = await showTimePicker(
+                    initialTime: TimeOfDay.now(),
+                    context: context,
+                  );
 
-   Row(children: [
- Widgetsport(widget.key,'Joggen',Icon(Icons.directions_run,size: 30,),Colors.blue,null),
- Widgetsport(widget.key,'Gehen',Icon(Icons.directions_walk,size: 30,),Colors.blue,null),
-   ],),
-   Row(children: [
- Widgetsport(widget.key,'Reiten',Icon(Icons.landscape,size: 30,),Colors.blue,null),
- Widgetsport(widget.key,'Fahrrad fahren',Icon(Icons.directions_bike,size: 30,),Colors.blue,null),
-   ],),
-   Row(children: [
- Widgetsport(widget.key,'Schwimmen',Icon(Icons.pool,size: 30,),Colors.blue,null),
- Widgetsport(widget.key,'Golfen',Icon(Icons.golf_course,size: 30,),Colors.blue,null),
-   ],),
-   Row(children: [
- Widgetsport(widget.key,'Fußball',Icon(Icons.sports_soccer,size: 30,),Colors.blue,null),
- Widgetsport(widget.key,'Gymnastik',Icon(Icons.alarm_on,size: 30,),Colors.blue,null),
-   ],),
-   Row(children: [
- Widgetsport(widget.key,'Tischtennis',Icon(Icons.sports_basketball,size: 30,),Colors.blue,null),
- Widgetsport(widget.key, 'Fitness',Icon(Icons.fitness_center,size: 30,),Colors.blue,null),
-   ],),
-    Row(children: [
- Widgetsport(widget.key,'Tennis',Icon(Icons.sports_tennis,size: 30,),Colors.blue,null),
- Widgetsport(widget.key,'Ski fahren',Icon(Icons.ac_unit,size: 30,),Colors.blue,null),
-   ],),
+                  timeController.text = time.format(context);
 
-   
-          
-              ]
-),
+                  setState(() {
+                    timeOfDayTime = time;
+                  });
+                },
+              ),
+            ),
+            Divider(
+              height: 15,
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Text(
+                'Wie lange machst du heute Sport?',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 5, bottom: 5, left: 15, right: 15),
+              child: DropdownButton(
+                hint: _dropDownSportdauer == null
+                    ? Text('Sportdauer')
+                    : Text(
+                        _dropDownSportdauer,
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                iconSize: 30.0,
+                style: TextStyle(color: Colors.blue),
+                items: sportdauer.map(
+                  (val) {
+                    return DropdownMenuItem<String>(
+                      value: val,
+                      child: Text(val),
+                    );
+                  },
+                ).toList(),
+                onChanged: (val) {
+                  setState(
+                    () {
+                      _dropDownSportdauer = val;
+                    },
+                  );
+                },
+              ),
+            ),
+            Row(
+              children: [
+                SportWidget(
+                    widget.key,
+                    'sportart',
+                    'Joggen',  
+                    23456,
+                    Colors.blue,
+                    statusList),
+                SportWidget(
+                    widget.key,
+                    'sportart',
+                    'Gehen',
+                    59073,
+                    Colors.blue,
+                    statusList),
+              ],
+            ),
+            Row(
+              children: [
+                SportWidget(
+                    widget.key,
+                    'sportart',
+                    'Reiten',
+                    59389,
+                    Colors.blue,
+                    statusList),
+                SportWidget(
+                    widget.key,
+                    'sportart',
+                    'Fahrrad fahren',
+                    0xe6b8,
+                    Colors.blue,
+                    statusList),
+              ],
+            ),
+            Row(
+              children: [
+                SportWidget(
+                    widget.key,
+                    'sportart',
+                    'Schwimmen',
+                    59714,
+                    Colors.blue,
+                    statusList),
+                SportWidget(
+                    widget.key,
+                    'sportart',
+                    'Golfen',
+                    59280,
+                    Colors.blue,
+                    statusList),
+              ],
+            ),
+            Row(
+              children: [
+                SportWidget(
+                    widget.key,
+                    'sportart',
+                    'Fußball',
+                    59931,
+                    Colors.blue,
+                    statusList),
+                SportWidget(
+                    widget.key,
+                    'sportart',
+                    'Gymnastik',
+                   58769,
+                    Colors.blue,
+                    statusList),
+              ],
+            ),
+            Row(
+              children: [
+                SportWidget(
+                    widget.key,
+                    'sportart',
+                    'Tischtennis',
+                    59921,
+                    Colors.blue,
+                    statusList),
+                SportWidget(
+                    widget.key,
+                    'sportart',
+                    'Fitness',
+                   59216,
+                    Colors.blue,
+                    statusList),
+              ],
+            ),
+            Row(
+              children: [
+                SportWidget(
+                    widget.key,
+                    'sportart',
+                    'Tennis',
+                    59932,
+                    Colors.blue,
+                    statusList),
+                SportWidget(
+                    widget.key,
+                    'sportart',
+                    'Ski fahren',
+                    58712,
+                    Colors.blue,
+                    statusList),
+              ],
+            ),
+          ]),
         ),
       ),
     );
-  }}
+  }
+}
 
-
-void functionToDatabase(String string){
-  //if(time!=null){
-  print(string);
-  //}else{
-  //  showDialog(context: context);
-  //}
+void saveSport(
+  List<StatusIcons> statusList,
+  TimeOfDay timeOfDayTime, 
+  String sportdauer,
+  DateTime dateTimeDay,
+) {
+  StatusIcons sportart =
+      statusList.firstWhere((element) => element.id == "sportart");  
+  Sport sporti = new Sport(  
+    userid: null,
+    uhrzeit: timeOfDayTime,
+    sportdauer: sportdauer,
+    sportart: sportart,
+    datum: dateTimeDay,
+  );
+  print(sporti.toJson());
+  sportSetup(sporti);
+}
+Future<void> sportSetup(Sport sport) async {
+  CollectionReference sportref = FirebaseFirestore.instance.collection('sport');
+  sportref.add(sport.toJson());
 }

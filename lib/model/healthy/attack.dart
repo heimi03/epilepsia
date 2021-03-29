@@ -1,37 +1,48 @@
 import 'package:epilepsia/model/healthy/stimmung.dart';
+import 'package:flutter/material.dart';
 
 class Attack {
-  String id;
+  String userid;
   DateTime datum;
+  TimeOfDay uhrzeit;
   String dauer;
   String anfallsart;
   StatusIcons symptome;
   String notizen;
 
-  Attack({this.id, this.datum, this.dauer, this.symptome, this.anfallsart, this.notizen});
+  Attack(
+      {this.userid,
+      this.datum,
+      this.uhrzeit,
+      this.dauer,
+      this.symptome,
+      this.anfallsart,
+      this.notizen});
 
   factory Attack.fromJson(Map<String, dynamic> data) {
-    DateTime dateTime = DateTime.parse(data['datum']);
+    DateTime _datumfirebase = data['datum'].toDate();
+      var datum = data['datum'].toDate();
+    var uhrZeit = data["uhrZeit"];
     return Attack(
-      id: data['id'],
-      datum: dateTime,
+      userid: data['id'],
+      datum: datum,
       dauer: data['dauer'],
       anfallsart: data['anfallsart'],
       symptome: StatusIcons.fromJson(data['symptome']),
       notizen: data['notizen'],
-      
     );
   }
 
   Map<String, dynamic> toJson() {
     Map _symptome = this.symptome != null ? this.symptome.toJson() : null;
-        return {
-      'id': id,
-      'datum': datum.toIso8601String(),
+    return {
+      'id': userid,
+      'datum': datum,
+      'uhrZeit': uhrzeit.toString(),
       'dauer': dauer,
-      'anfallsart': anfallsart, 
-      'symptome': _symptome, 
-      'notizen' : notizen, 
+      'anfallsart': anfallsart,
+      'symptome': _symptome,
+      'notizen': notizen,
     };
   }
 }

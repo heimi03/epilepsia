@@ -1,5 +1,4 @@
 import 'package:epilepsia/Symptoms/attack.dart';
-import 'package:epilepsia/config/router.dart';
 import 'package:epilepsia/Symptoms/sleep.dart';
 import 'package:epilepsia/Symptoms/startseite.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +9,11 @@ class Symptoms extends StatefulWidget {
   _SymptomsState createState() => _SymptomsState();
 }
 
-
 class _SymptomsState extends State<Symptoms> {
   @override
    Widget build(BuildContext context) {
+
+
     return DefaultTabController(
   length: 3,
   child: Scaffold(
@@ -32,7 +32,7 @@ class _SymptomsState extends State<Symptoms> {
            children:[
              Startseite(),
              Attackwidget(),
-             Sleep(), ]
+             SleepWidget(), ]
  
   ),
 ),

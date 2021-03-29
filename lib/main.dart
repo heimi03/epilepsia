@@ -1,16 +1,11 @@
 import 'package:epilepsia/Home/calendar.dart';
-import 'package:epilepsia/Daily/daily.dart';
 import 'package:epilepsia/Home/diary.dart';
 import 'package:epilepsia/Home/home.dart';
-import 'package:epilepsia/Medication/medication.dart';
 import 'package:epilepsia/Home/settings.dart';
-import 'package:epilepsia/Symptoms/symptoms.dart';
+import 'package:epilepsia/config/farben.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart' hide Router;
-import 'package:epilepsia/config/farben.dart';
 import 'config/router.dart';
-
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,27 +13,25 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'epilepsia',
-      theme: ThemeData(
-        
-        primarySwatch: Colors.blueGrey,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(),
-      onGenerateRoute: Router.generateRoute,
-      initialRoute: routeHome,
-    );
+        title: 'epilepsia',
+        theme: ThemeData(
+          primarySwatch: Colors.blueGrey,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: MyHomePage(),
+        onGenerateRoute: Router.generateRoute,
+        initialRoute: routeLogin);
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key,}) : super(key: key);
+  MyHomePage({
+    Key key,
+  }) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -46,58 +39,162 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-int _selectedIndex = 0;
-static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-final List<Widget> _widgetOptions = <Widget>[
-  Home(),
-  Calendar(),
-  Diary(),
-  Settings(),
-];
+    // AuthenticationService authenticationService =
+  //     AuthenticationService(firebaseAuth: FirebaseAuth.instance);
+  // final GoogleSignIn googleSignIn = GoogleSignIn();
+  String email;
+  String password;
+  String message = "";
+  bool loginFail = false;
+ 
 
-void _onItemTapped(int index) {
-  setState(() {
-    _selectedIndex = index;
-  });
-}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    body: _widgetOptions[_selectedIndex],
-    
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("Login"),
+        backgroundColor: hellblau,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(top: 20, bottom: 20),
+              width: 300,
+              height: 100,
+              child: Image.asset('assets/image/logo_small.png'),
+            ),
+            Padding(
+              //Email Textfield
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Email',
+                  hintText: 'Geben Sie eine gültige Email ein.',
+                ),
+                onChanged: (String value) {
+                  email = value;
+                },
+              ),
+            ),
+            Padding(
+              //Password Textfield
+              padding: const EdgeInsets.only(
+                  left: 15.0, right: 15.0, top: 15, bottom: 0),
+              child: TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Passwort',
+                  hintText: 'Geben Sie ein sicheres Passwort ein.',
+                ),
+                onChanged: (String value) {
+                  password = value;
+                },
+              ),
+            ),
+            Container(
+              //Show Error Messages
+              padding: const EdgeInsets.only(
+                  left: 15.0, right: 15.0, top: 15, bottom: 0),
+              child: Text(
+                message,
+                style: TextStyle(color: hellblau),
+              ),
+            ),
+            TextButton(
+              //Buttom to navigate -> PasswortResetView
+              onPressed: () {
+                //Navigator.pushNamed(context, routePasswordReset);
+              },
+              child: Text(
+                'Passwort vergessen',
+                style: TextStyle(color: hellblau, fontSize: 15),
+              ),
+            ),
+            Container(
+              //Login Buttom
+              //Starting the Login process
+              margin: EdgeInsets.all(20),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  color: hellblau, borderRadius: BorderRadius.circular(5)),
+              child: TextButton(
+                onPressed: () async {
+                  //login();
+                  Navigator.pushNamed(context, routePrimaryHome);
 
-
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.blueGrey,
-        type: BottomNavigationBarType.fixed,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home,
-          color: Colors.black),
-          label: 'Home',
+                },
+                child: Text(
+                  'Login',
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+              ),
+            ),
+            Divider(
+              thickness: 1,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            SizedBox(
+              height: 100,
+            ),
+            TextButton(
+              //Buttom to navigate -> SignUpView
+              onPressed: () {
+              //  Navigator.pushNamed(context, routeHome);
+              },
+              child: Text('Neuer Kunde? Erstellen Sie ein neues Konto'),
+            ),
+          ],
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.calendar_today,
-          color: Colors.black),
-          label: 'Kalender',
-        ),
-        BottomNavigationBarItem
-        (
-          icon: Icon(Icons.book,
-          color: Colors.black),
-          label: 'Tagebuch',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle_outlined,
-          color: Colors.black,
-          ),
-          label: 'Einstellungen',
-        ),
-      ],
-      currentIndex: _selectedIndex,
-      selectedItemColor: Colors.black,
-      onTap: _onItemTapped,
-    ),
+      ),
     );
+  }
+
+  void login() async {
+    // var authReturn =
+    //     await authenticationService.signIn(email: email, password: password);
+    // if (authReturn == "Success") {
+    //   //Check if login was successfull
+    //   if (authenticationService.firebaseAuth.currentUser.emailVerified) {
+    //     //Check if account is Verified
+    //     Navigator.pushAndRemoveUntil(
+    //       context,
+    //       MaterialPageRoute(builder: (context) => Home()),
+    //       (Route<dynamic> route) => false,
+    //     );
+    //   } else {
+    //     //Send a verification Email
+    //     await authenticationService.firebaseAuth.currentUser
+    //         .sendEmailVerification();
+    //     showDialog(
+    //       context: context,
+    //       builder: (_) => AlertDialog(
+    //         title: Text('Account bestätigen!'),
+    //         content: Text(
+    //             'Überprüfen Sie Ihr Postfach und bestätigen Sie Ihr neues Konto!'),
+    //         actions: [
+    //           TextButton(
+    //             onPressed: () {
+    //               Navigator.of(context).pop();
+    //             },
+    //             child: Text(
+    //               "Verstanden",
+    //               style: TextStyle(color: hellblau),
+    //             ),
+    //           ),
+    //         ],
+    //       ),
+    //     );
+    //   }
+    // } else {
+    //   setState(() {
+    //     message = authReturn;
+    //   });
+    // }
   }
 }

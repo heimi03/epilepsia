@@ -13,7 +13,7 @@ class StatusIcons {
       id: data['id'],
       name: data['name'],
       iconData: data['iconData'],
-      color: Color(data['symptome'] as int),
+      color: Color(data['color'] as int),
     );
   }
 

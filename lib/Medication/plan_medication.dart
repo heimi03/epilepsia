@@ -1,5 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:epilepsia/config/widget/widget.dart';
+import 'package:epilepsia/model/healthy/stimmung.dart';
+import 'package:epilepsia/model/medication/medication.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
+FirebaseFirestore firestore = FirebaseFirestore.instance;
 
 class PlanMedication extends StatefulWidget {
   PlanMedication({
@@ -9,190 +15,81 @@ class PlanMedication extends StatefulWidget {
   _PlanMedicationState createState() => _PlanMedicationState();
 }
 
-class _PlanMedicationState extends State<PlanMedication> {
-  final dateController = TextEditingController();
-  final dateController1 = TextEditingController();
-  List<String> wiederholung = <String>["Täglich", "Wöchentlich", "Monatlich"];
-  String _dropDownWiederholung;
-  final timeController = TextEditingController();
-  final timeController1 = TextEditingController();
-  final timeController2 = TextEditingController();
+var result;
 
-  void dispose() {
-    // Clean up the controller when the widget is removed
-    dateController.dispose();
-    super.dispose();
-    dateController1.dispose();
-    super.dispose();
+class _PlanMedicationState extends State<PlanMedication> {
+  @override
+  void initState() {
+    super.initState();
   }
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController nameController1 = TextEditingController();
-  String fullName = '';
-  int itemCount = 0;
   @override
   Widget build(BuildContext context) {
-    DateFormat format = DateFormat('dd.MM.yyyy');
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(children: [
-          Text("Anzahl der Pilleneinnahmen - Uhrzeit auswählen"),
-          IconButton(
-            icon: Icon(Icons.add_alarm),
-            onPressed: () {
-              setState(() {
-                itemCount++;
-              });
-            },
-          ),
-          Container(
-            height: 90,
-            child: ListView.builder(
-                itemCount: itemCount,
-                itemBuilder: (BuildContext context, int index) {
-                  return TextField(
-                    readOnly: true,
-                    controller: timeController,
-                    decoration: InputDecoration(
-                        hoverColor: Colors.blue[200],
-                        hintText: 'Uhrzeit auswählen'),
-                    onTap: () async {
-                      var time = await showTimePicker(
-                        initialTime: TimeOfDay.now(),
-                        context: context,
-                      );
-                      timeController.text = time.format(context);
-                    },
-                  );
-                }),
-          ),
-          
-          Divider(
-            height: 15,
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 15.0),
-            child: Row(children: [
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: Text(
-                  'Wiederholungen: ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              VerticalDivider(
-                width: 20,
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 5, bottom: 5, left: 15, right: 15),
-                child: DropdownButton(
-                  hint: _dropDownWiederholung == null
-                      ? Text('')
-                      : Text(
-                          _dropDownWiederholung,
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                  iconSize: 30.0,
-                  style: TextStyle(color: Colors.blue),
-                  items: wiederholung.map(
-                    (val) {
-                      return DropdownMenuItem<String>(
-                        value: val,
-                        child: Text(val),
-                      );
-                    },
-                  ).toList(),
-                  onChanged: (val) {
-                    setState(
-                      () {
-                        _dropDownWiederholung = val;
-                      },
+    return FutureBuilder(
+        future: getMedicationData(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (!snapshot.hasData) {
+            return CupertinoActivityIndicator(
+              radius: 20,
+            );
+          } else {
+            var data = snapshot.data as List<Medication>;
+            return Scaffold(
+              body: ListView.builder(
+                  itemCount: data.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    Medication item = data[index];
+                    return Card(
+                      color: item.farbe.color,
+                      margin: const EdgeInsets.only(right: 30, left: 30, top: 20),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(child: Text("Medikamentenname:  " + item.name)), 
+                              Expanded(child: Container(
+                                child: Icon(IconData(item.icon.iconData , fontFamily: 'MaterialIcons'),)),),
+                              
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text("Dosis:  " + item.dosis)),
+                              Expanded(
+                                child: Text("Wiederholung:  " + item.wiederholungen)), 
+                            ],
+                          ),
+                        ],
+                      ),
                     );
-                  },
-                ),
-              ),
-            ]),
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 15.0),
-            child: TextField(
-              readOnly: true,
-              controller: dateController1,
-              decoration: InputDecoration(
-                  hoverColor: Colors.blue[200],
-                  hintText: 'Startdatum der Einnahme'),
-              onTap: () async {
-                var date1 = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime(2100));
-
-                dateController1.value =
-                    TextEditingValue(text: format.format(date1));
-              },
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.all(15.0),
-            child: TextField(
-              readOnly: true,
-              controller: dateController,
-              decoration: InputDecoration(
-                  hoverColor: Colors.blue[200],
-                  hintText: 'Enddatum der Einnahme'),
-              onTap: () async {
-                var date = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime(2100));
-                dateController.value =
-                    TextEditingValue(text: format.format(date));
-              },
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(right: 15.0),
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: Text(
-                '*Kann auch leer gelassen werden',
-                style: TextStyle(
-                  fontSize: 10,
-                ),
-              ),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.all(15.0),
-            child: TextField(
-                controller: nameController1,
-                decoration: InputDecoration(
-                  suffixIcon: Icon(Icons.drive_file_rename_outline),
-                  border: OutlineInputBorder(),
-                  labelText: 'Erinnerungstext',
-                ),
-                onChanged: (text1) {
-                  setState(() {
-                    fullName = text1;
-                  });
-                }),
-          ),
-          ElevatedButton.icon(
-            onPressed: () {},
-            icon: Icon(Icons.add, size: 18),
-            label: Text("Hinzufügen"),
-            style: ElevatedButton.styleFrom(
-              primary: Colors.blue[200],
-              onPrimary: Colors.white,
-              onSurface: Colors.grey,
-            ),
-          )
-        ]),
-      ),
-    );
+                  }),
+            );
+          }
+        });
   }
+}
+
+Future<List<Medication>> getMedicationData() async {
+  List<Medication> list = <Medication>[];
+  print("list");
+  result = await firestore
+      .collection("medication")
+      //.where("datum", isEqualTo: date)
+      // .where("userId", isEqualTo: User.id)
+      .get();
+
+  result.docs.forEach((result) {
+    var data = result.data();
+    print(data);
+    Medication medication = new Medication.fromJson(data);
+    print(medication.toJson());
+    list.add(medication);
+  });
+
+  // setState(() {
+  //   getDataBoolMedication = true;
+  // });
+  print(list);
+  return list;
 }

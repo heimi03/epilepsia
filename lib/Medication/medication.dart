@@ -1,19 +1,18 @@
 import 'package:epilepsia/Medication/add_medication.dart';
 import 'package:epilepsia/Medication/plan_medication.dart';
-import 'package:epilepsia/config/router.dart';
 import 'package:flutter/material.dart';
 
-import '../config/farben.dart';
 
-class Medication extends StatefulWidget {
-   Medication({Key key,}) : super(key: key);
+
+class MedicationWidget extends StatefulWidget {
+   MedicationWidget({Key key,}) : super(key: key);
   @override
   _MedicationState createState() => _MedicationState();
 }
 
 
 
-class _MedicationState extends State<Medication> {
+class _MedicationState extends State<MedicationWidget> {
   @override
   Widget build(BuildContext context) {
    return DefaultTabController(

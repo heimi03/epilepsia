@@ -1,4 +1,3 @@
-import 'package:epilepsia/config/farben.dart';
 import 'package:epilepsia/model/healthy/stimmung.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +21,9 @@ class _StatusWidgetState extends State<StatusWidget> {
   String text;
   int iconData;
   Color color;
+  Border border;
   bool change = false;
+  bool _isEnable = false;
 
   @override
   void initState() {
@@ -30,6 +31,11 @@ class _StatusWidgetState extends State<StatusWidget> {
     iconData = widget.iconData;
     color = widget.color;
     id = widget.id;
+    border = Border.all(
+      color: Colors.black,
+      width: 1,
+    );
+    print(text);
     super.initState();
   }
 
@@ -38,15 +44,15 @@ class _StatusWidgetState extends State<StatusWidget> {
     return Expanded(
       child: Container(
         margin: EdgeInsets.only(top: 20, bottom: 5, left: 10, right: 10),
-        height: 70,
+        height: 100,
+       
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Container(
               decoration: new BoxDecoration(
                 color: color,
-                shape: BoxShape.circle,
-              ),
+                shape: BoxShape.circle,border: border),
               child: IconButton(
                 icon: Icon(IconData(iconData, fontFamily: 'MaterialIcons')),
                 onPressed: () {
@@ -63,28 +69,48 @@ class _StatusWidgetState extends State<StatusWidget> {
                                 (element) => element.name == statusIcon.name,
                                 orElse: () => null)) !=
                             null) {
-                               change = false;
+                          change = false;
                           color = widget.color;
                           widget.statusList.removeWhere(
                               (element) => element.name == statusIcon.name);
-                            }
+                        }
                       } else {
                         print("not Exist");
-                        
-                          change = true;
-                          color = dunkelblau;
-                          widget.statusList.add(statusIcon);
-                        
+                        setState(() {
+                          if (text == "Stress") {
+                            _isEnable = true;
+                          }
+                          border = Border.all(
+                          color: Colors.red,
+                          width: 5,
+                        );
+                        });
+                        change = true;
+                        color = Colors.green[200];
+                        widget.statusList.add(statusIcon);
                       }
                     },
                   );
-                  //functionToDatabase(string);
                 },
               ),
             ),
-            Text(
-              text,
-              style: TextStyle(fontSize: 12),
+            Visibility(
+              visible: _isEnable,
+              child: Container(
+                margin: EdgeInsets.only(top: 10, bottom: 0, left: 5, right: 5),
+                decoration: BoxDecoration(
+                  color: Colors.lime,
+                ),
+                child: Text("Bitte Spiel spielen!!!"),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 10, bottom: 10,),
+
+              child: Text(
+                text,
+                style: TextStyle(fontSize: 12),
+              ),
             ),
           ],
         ),

@@ -1,79 +1,95 @@
-import 'package:epilepsia/Symptoms/startseite.dart';
+import 'package:epilepsia/model/healthy/sleep.dart';
 import 'package:epilepsia/model/healthy/stimmung.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 import '../config/widget/widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Sleep extends StatefulWidget {
-  Sleep({
+FirebaseFirestore firestore = FirebaseFirestore.instance;
+final timeController = TextEditingController();
+final timeController1 = TextEditingController();
+final dateController = TextEditingController();
+
+class SleepWidget extends StatefulWidget {
+  SleepWidget({
     Key key,
   }) : super(key: key);
   @override
   _SleepState createState() => _SleepState();
 }
 
-class _SleepState extends State<Sleep> {
-  final timeController = TextEditingController();
-  final timeController1 = TextEditingController();
-   List<StatusIcons> statusList = <StatusIcons>[];
+class _SleepState extends State<SleepWidget> {
+  List<StatusIcons> statusList = <StatusIcons>[];
+  TimeOfDay timeOfDayTime;
+  DateTime dateTimeDay;
 
-TimeOfDay startDate;
-TimeOfDay endDate;
-String minute = "";
-String hours = "";
-String zeit = "";
- 
- @override
+  TimeOfDay startDate;
+  TimeOfDay endDate;
+  String minute = "";
+  String hours = "";
+  String zeit = "";
+
+  @override
   void initState() {
     super.initState();
   }
 
-  void dispose() {
-    // Clean up the controller when the widget is removed
-    timeController.dispose();
-    super.dispose();
-    timeController1.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    if(hours != "" && minute != ""){
-zeit = "Dauer: " + hours + ":" + minute;
-    }else if(hours == "" && minute != ""){
-     zeit = "Dauer: " + "00:" + minute;
+    DateFormat format = DateFormat('dd.MM.yyyy');
+    if (hours != "" && minute != "") {
+      zeit = "Dauer: " + hours + ":" + minute;
+    } else if (hours == "" && minute != "") {
+      zeit = "Dauer: " + "00:" + minute;
+    } else if (hours != "" && minute == "") {
+      zeit = "Dauer: " + hours + ":00";
+    } else {
+      zeit = "";
     }
-    else if(hours != "" && minute == ""){
-     zeit = "Dauer: " + hours + ":00";
-    }else{
-      zeit = "Bitte Zeit auswählen";
-    }
-    
-    
-       return Container(
+
+    return Container(
         margin: const EdgeInsets.all(15.0),
         child: Column(children: [
-         
+          Container(
+            child: TextField(
+              readOnly: true,
+              controller: dateController,
+              decoration: InputDecoration(
+                  hoverColor: Colors.blue[200], hintText: 'Tag auswählen'),
+              onTap: () async {
+                var date = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime(2100));
 
+                dateController.value =
+                    TextEditingValue(text: format.format(date));
+
+                setState(() {
+                  dateTimeDay = date;
+                });
+              },
+            ),
+          ),
           TextField(
             readOnly: true,
             controller: timeController,
             decoration: InputDecoration(
                 hoverColor: Colors.blue[200], hintText: 'Eingeschlafen'),
             onTap: () async {
-             startDate = await showTimePicker(
+              var time = await showTimePicker(
                 initialTime: TimeOfDay.now(),
                 context: context,
               );
-               setState(() {
-      
+              timeController.text = time.format(context);
+              setState(() {
+                startDate = time;
                 hours = (endDate.hour - startDate.hour).toString();
                 minute = (endDate.minute - startDate.minute).toString();
-                          });
-              timeController.text = startDate.format(context);
+              });
             },
           ),
-
           TextField(
             readOnly: true,
             controller: timeController1,
@@ -85,97 +101,107 @@ zeit = "Dauer: " + hours + ":" + minute;
                 context: context,
               );
               setState(() {
-      
-                hours = (endDate.hour - startDate.hour).toString();  
-                 minute = (endDate.minute - startDate.minute).toString();        });
+                hours = (endDate.hour - startDate.hour).toString();
+                minute = (endDate.minute - startDate.minute).toString();
+              });
               timeController1.text = endDate.format(context);
             },
           ),
-          Divider(height: 15,),
-Align(
-              alignment: Alignment.bottomLeft,
-              child: Text(
-               zeit,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
+          Divider(
+            height: 15,
+          ),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Text(
+              zeit,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
               ),
             ),
-Divider(height: 15,thickness: 5,),           
- Align(
-              alignment: Alignment.bottomLeft,
-              child: Text(
-                'Schlafqualität',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+          ),
+          Divider(
+            height: 15,
+            thickness: 5,
+          ),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Text(
+              'Schlafqualität',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
               ),
             ),
-            Row(
-              children: [
-                      StatusWidget(
-                        widget.key,
-                        'schlaf',
-                        'Ausgeruht',
-                        0xeae2,
-                        Colors.blue,
-                        statusList,
-                      ),
-                      StatusWidget(
-                        widget.key,
-                        'schlaf',
-                        'Neutral',
-                        0xe42d,
-                        Colors.blue,
-                        statusList,
-                      ),
-                      StatusWidget(
-                        widget.key,
-                        'schlaf',
-                        'Insomnie',
-                        59566, 
-                        Colors.blue,
-                        statusList,
-                      ),
-                      StatusWidget(
-                        widget.key,
-                        'schlaf',
-                        'Albträume',
-                        59222, 
-                        Colors.blue,
-                        statusList,
-                      ),
-              ],
+          ),
+          Row(
+            children: [
+              StatusWidget(
+                widget.key,
+                'schlaf',
+                'Ausgeruht',
+                0xeae2,
+                Colors.blue,
+                statusList,
+              ),
+              StatusWidget(
+                widget.key,
+                'schlaf',
+                'Neutral',
+                0xe42d,
+                Colors.blue,
+                statusList,
+              ),
+              StatusWidget(
+                widget.key,
+                'schlaf',
+                'Insomnie',
+                59566,
+                Colors.blue,
+                statusList,
+              ),
+              StatusWidget(
+                widget.key,
+                'schlaf',
+                'Albträume',
+                59222,
+                Colors.blue,
+                statusList,
+              ),
+            ],
+          ),
+          ElevatedButton.icon(
+            onPressed: () {
+              saveSleep(statusList, dateTimeDay, zeit);
+              // Respond to button press
+            },
+            icon: Icon(Icons.add, size: 18),
+            label: Text("Hinzufügen"),
+            style: ElevatedButton.styleFrom(
+              primary: Colors.blue[200],
+              onPrimary: Colors.white,
+              onSurface: Colors.grey,
             ),
+          )
+        ]));
+  }
 
-        ElevatedButton.icon(
-                onPressed: () {
-                  
-                  // Respond to button press
-                },
-                icon: Icon(Icons.add, size: 18),
-                label: Text("Hinzufügen"),
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.blue[200],
-                  onPrimary: Colors.white,
-                  onSurface: Colors.grey,
-                ),
-              )
-            
-
-            
-
-  
-
-        ]
-        
-        ));
+  void saveSleep(
+      List<StatusIcons> statusList, DateTime dateTimeDay, String dauerSchlaf) {
+    StatusIcons sleep =
+        statusList.firstWhere((element) => element.id == "schlaf");
+    Sleep sleepi = new Sleep(
+        userid: null,
+        datum: dateTimeDay,
+        dauerSchlaf: dauerSchlaf,
+        sleepicon: sleep);
+    print(sleepi);
+    print(sleepi.toJson());
+    sleepSetup(sleepi);
+    print(statusList[0].toJson());
   }
 }
-void functionToDatabase(){
-  //if(time!=null){
-  //}else{
-  //  showDialog(context: context);
-  //}
+
+Future<void> sleepSetup(Sleep sleep) async {
+  CollectionReference sleepref = FirebaseFirestore.instance.collection('sleep');
+  sleepref.add(sleep.toJson());
 }

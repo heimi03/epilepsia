@@ -1,7 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:epilepsia/model/daily/sport.dart';
+import 'package:epilepsia/model/healthy/attack.dart';
+import 'package:epilepsia/model/healthy/sleep.dart';
+import 'package:epilepsia/model/healthy/status.dart';
 import 'package:epilepsia/model/healthy/stimmung.dart';
 import 'package:epilepsia/config/widget/widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+
+FirebaseFirestore firestore = FirebaseFirestore.instance;
 
 class Diary extends StatefulWidget {
   Diary({
@@ -10,10 +18,21 @@ class Diary extends StatefulWidget {
   @override
   _DiaryState createState() => _DiaryState();
 }
+var result;
 
 class _DiaryState extends State<Diary> {
   final dateController = TextEditingController();
-   List<StatusIcons> statusList = <StatusIcons>[];
+  List<StatusIcons> statusList = <StatusIcons>[];
+
+  List<Status> statusDataList = <Status>[];
+  List<Attack> attackDataList = <Attack>[];
+    List<Sleep> sleepDataList = <Sleep>[];
+ List<Sport> sportDataList = <Sport>[];
+  bool getDataBoolStatus = false;
+  bool getDataBoolAttack = false;
+  bool getDataBoolSleep = false;
+    bool getDataBoolSport = false;
+
   void dispose() {
     dateController.dispose();
     super.dispose();
@@ -27,125 +46,13 @@ class _DiaryState extends State<Diary> {
     TextEditingController nameController = TextEditingController();
     String fullName = '';
     DateFormat format = DateFormat('dd.MM.yyyy');
-    final AlertDialog dialog = AlertDialog(
-      title: Text('Termin hinzufügen'),
-      content: Form(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(
-                  controller: nameController,
-                  decoration: InputDecoration(
-                    suffixIcon: Icon(Icons.drive_file_rename_outline),
-                    border: OutlineInputBorder(),
-                    labelText: 'Terminname',
-                  ),
-                  onChanged: (text) {
-                    setState(() {
-                      fullName = text;
-                    });
-                  }),
-              Container(
-                child: TextField(
-                  readOnly: true,
-                  controller: dateController,
-                  decoration: InputDecoration(
-                      hoverColor: Colors.blue[200], hintText: 'Datum'),
-                  onTap: () async {
-                    var date = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime(2100));
-                    dateController.value =
-                        TextEditingValue(text: format.format(date));
-                  },
-                ),
-              ),
-              TextField(
-                readOnly: true,
-                controller: timeController,
-                decoration: InputDecoration(
-                    hoverColor: Colors.blue[200], hintText: 'Von'),
-                onTap: () async {
-                  var time = await showTimePicker(
-                    initialTime: TimeOfDay.now(),
-                    context: context,
-                  );
+   
 
-                  timeController.text = time.format(context);
-                },
-              ),
-              TextField(
-                readOnly: true,
-                controller: timeController1,
-                decoration: InputDecoration(
-                    hoverColor: Colors.blue[200], hintText: 'Bis'),
-                onTap: () async {
-                  var time = await showTimePicker(
-                    initialTime: TimeOfDay.now(),
-                    context: context,
-                  );
-
-                  timeController1.text = time.format(context);
-                },
-              ),
-              Row(
-              children: [
-                      StatusWidget(
-                        widget.key,
-                        'grün',
-                        '',
-                        57594,
-                        Colors.green,
-                        statusList,
-                      ),
-                      StatusWidget(
-                        widget.key,
-                        'blau',
-                        '',
-                        57594,
-                        Colors.blue,
-                        statusList,
-                      ),
-                      StatusWidget(
-                        widget.key,
-                        'gelb',
-                        '',
-                        57594, 
-                        Colors.yellow,
-                        statusList,
-                      ),
-                      StatusWidget(
-                        widget.key,
-                        'rot',
-                        '',
-                        57594, 
-                        Colors.red,
-                        statusList,
-                      ),
-              ],
-            ),
-            ],
-          ),
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text('Abbrechen'),
-        ),
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text('Hinzufügen'),
-        ),
-      ],
-    );
     return Scaffold(
         body: SingleChildScrollView(
       child: Column(children: [
         Container(
-          margin: EdgeInsets.only(top: 40, bottom: 5, left: 50, right: 50),
+          margin: EdgeInsets.only(top: 10, bottom: 5, left: 50, right: 50),
           child: TextField(
             readOnly: true,
             controller: dateController,
@@ -160,17 +67,271 @@ class _DiaryState extends State<Diary> {
                   lastDate: DateTime(2100));
               dateController.value =
                   TextEditingValue(text: format.format(date));
+              setState(() async {
+                statusDataList = await getData(date);
+                attackDataList = await getAttackData(date);
+                sleepDataList = await getSleepData(date);
+                sportDataList = await getSportData(date);
+              });
             },
           ),
         ),
         Container(
-            child: TextButton(
-          onPressed: () {
-            showDialog<void>(context: context, builder: (context) => dialog);
-          },
-          child: Text("Termin eintragen"),
-        )),
+          height: 1500,
+          child:
+          Column(children: [
+          Visibility(
+            visible: getDataBoolStatus && statusDataList.isEmpty,
+            child: Container(child: Text("Kein Eintrag für den Status gefunden!"))),
+        Visibility(
+          visible: getDataBoolStatus,
+          child: Container(
+            height: 100,
+            child: ListView.builder(
+                itemCount: statusDataList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  Status item = statusDataList[index];
+                  var newFormat = DateFormat("dd-MM-yyyy");
+                  String updatedDt = newFormat.format(item.datum);
+                  return Container(
+                    margin: const EdgeInsets.all(15.0),
+                    child: Column(children: [
+                      Text(updatedDt),
+                      Row(children: [
+                        StatusWidget(
+                          widget.key,
+                          item.stimmung.id,
+                          item.stimmung.name,
+                          item.stimmung.iconData,
+                          item.stimmung.color,
+                          null,
+                        ),
+                        StatusWidget(
+                          widget.key,
+                          item.symptome.id,
+                          item.symptome.name,
+                          item.symptome.iconData,
+                          item.symptome.color,
+                          null,
+                        ),
+                        StatusWidget(
+                          widget.key,
+                          item.stress.id,
+                          item.stress.name,
+                          item.stress.iconData,
+                          item.stress.color,
+                          null,
+                        ),
+                      ]),
+                    ]),
+                  );
+                }),
+          ),
+        ),
+        Visibility(
+            visible: getDataBoolAttack && attackDataList.isEmpty,
+            child: Container(child: Text("Kein Eintrag für einen Anfall gefunden!"))),
+        Visibility(
+          visible: getDataBoolAttack,
+          child: Container(
+            height: 100,
+            child: ListView.builder(
+                itemCount: attackDataList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  Attack item = attackDataList[index];
+                  return Container(
+                    height: 200,
+                    child: Column(children: [
+                      Row(children: [
+                        StatusWidget(
+                          widget.key,
+                          item.symptome.id,
+                          item.symptome.name,
+                          item.symptome.iconData,
+                          item.symptome.color,
+                          null,
+                        ),
+                      ]),
+                      Text(item.dauer),
+                      Text(item.anfallsart)
+                    ]),
+                  );
+                }),
+          ),
+        ),
+        Visibility(
+            visible: getDataBoolSleep && sleepDataList.isEmpty,
+            child: Container(child: Text("Kein Eintrag für einen Schlaf gefunden!"))),
+        Visibility(
+          visible: getDataBoolSleep,
+          child: Container(
+            height: 100,
+            child: ListView.builder(
+                itemCount: sleepDataList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  Sleep item = sleepDataList[index];
+                  return Container(
+                    height: 200,
+                    child: Column(children: [
+                      Row(children: [
+                        StatusWidget(
+                          widget.key,
+                          item.sleepicon.id,
+                          item.sleepicon.name,
+                          item.sleepicon.iconData,
+                          item.sleepicon.color,
+                          null,
+                        ),
+                      ]),
+                      Text(item.dauerSchlaf)
+                    ]),
+                  );
+                }),
+          ),
+        ),
+        Visibility(
+            visible: getDataBoolSport && sportDataList.isEmpty,
+            child: Container(child: Text("Kein Eintrag für einen Sport gefunden!"))),
+        Visibility(
+          visible: getDataBoolSport,
+          child: Container(
+            height: 100,
+            child: ListView.builder(
+                itemCount: sportDataList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  Sport item = sportDataList[index];
+                  return Container(
+                    height: 200,
+                    child: Column(children: [
+                      Row(children: [
+                        StatusWidget(
+                          widget.key,
+                          item.sportart.id,
+                          item.sportart.name,
+                          item.sportart.iconData,
+                          item.sportart.color,
+                          null,
+                        ),
+                      ]),
+                      Text(item.sportdauer),
+                      
+                    ]),
+                  );
+                }),
+          ),
+        ),
+      
+          ],)
+        
+        
+        ),
+        
       ]),
     ));
+  }
+
+  Future<List<Status>> getData(DateTime date) async {
+    List<Status> list = <Status>[];
+
+    Timestamp myTimeStamp = Timestamp.fromDate(date);
+
+    result = await firestore
+        .collection("status")
+        .where("datum", isEqualTo: date)
+        // .where("userId", isEqualTo: User.id)
+        .get();
+
+    result.docs.forEach((result) {
+      var data = result.data();
+      Status status = new Status.fromJson(data);
+     
+
+      list.add(status);
+
+    });
+
+    setState(() {
+      getDataBoolStatus = true;
+    });
+
+    return list;
+  }
+  Future<List<Attack>> getAttackData(DateTime date)async {
+    List<Attack> list = <Attack>[];
+
+    Timestamp myTimeStamp = Timestamp.fromDate(date);
+
+    result = await firestore
+        .collection("attack")
+        .where("datum", isEqualTo: date)
+        // .where("userId", isEqualTo: User.id)
+        .get();
+
+    result.docs.forEach((result) {
+      var data = result.data();
+      Attack attack = new Attack.fromJson(data);
+     
+
+      list.add(attack);
+
+    });
+
+    setState(() {
+      getDataBoolAttack = true;
+    });
+
+    return list;
+  }
+
+  Future<List<Sleep>> getSleepData(DateTime date)async {
+    List<Sleep> list = <Sleep>[];
+
+    Timestamp myTimeStamp = Timestamp.fromDate(date);
+
+    result = await firestore
+        .collection("sleep")
+        .where("datum", isEqualTo: date)
+        // .where("userId", isEqualTo: User.id)
+        .get();
+
+    result.docs.forEach((result) {
+      var data = result.data();
+      Sleep sleep = new Sleep.fromJson(data);
+    
+      list.add(sleep);
+
+    });
+
+    setState(() {
+      getDataBoolSleep = true;
+    });
+
+    return list;
+  }
+
+  Future<List<Sport>> getSportData(DateTime date)async {
+    List<Sport> list = <Sport>[];
+
+    Timestamp myTimeStamp = Timestamp.fromDate(date);
+
+    result = await firestore
+        .collection("sport")
+        .where("datum", isEqualTo: date)
+        // .where("userId", isEqualTo: User.id)
+        .get();
+
+    result.docs.forEach((result) {
+      var data = result.data();
+      Sport sport = new Sport.fromJson(data);
+    
+      list.add(sport);
+
+    });
+
+    setState(() {
+      getDataBoolSport = true;
+    });
+
+    return list;
   }
 }

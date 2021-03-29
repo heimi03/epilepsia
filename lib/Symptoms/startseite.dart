@@ -1,9 +1,6 @@
-import 'package:epilepsia/config/farben.dart';
 import 'package:epilepsia/model/healthy/status.dart';
 import 'package:epilepsia/model/healthy/stimmung.dart';
-import 'package:epilepsia/model/healthy/symptome.dart';
 import 'package:epilepsia/config/widget/widget.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -21,13 +18,8 @@ class Startseite extends StatefulWidget {
 class _StartseiteState extends State<Startseite> {
   List<StatusIcons> statusList = <StatusIcons>[];
 
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is removed
-    timeController.dispose();
-    dateController.dispose();
-    super.dispose();
-  }
+  TimeOfDay timeOfDayTime;
+  DateTime dateTimeDay;
 
   Widget build(BuildContext context) {
     DateFormat format = DateFormat('dd.MM.yyyy');
@@ -38,7 +30,7 @@ class _StartseiteState extends State<Startseite> {
               child: Column(
                 children: [
                   Container(
-                    margin: const EdgeInsets.all(15.0),
+                  
                     child: TextField(
                       readOnly: true,
                       controller: dateController,
@@ -54,6 +46,10 @@ class _StartseiteState extends State<Startseite> {
 
                         dateController.value =
                             TextEditingValue(text: format.format(date));
+
+                        setState(() {
+                          dateTimeDay = date;
+                        });
                       },
                     ),
                   ),
@@ -69,6 +65,10 @@ class _StartseiteState extends State<Startseite> {
                         context: context,
                       );
                       timeController.text = time.format(context);
+
+                      setState(() {
+                        timeOfDayTime = time;
+                      });
                     },
                   ),
                   Divider(
@@ -121,7 +121,7 @@ class _StartseiteState extends State<Startseite> {
                     ],
                   ),
                   Divider(
-                    height: 40,
+                    height: 10,
                     thickness: 3,
                   ),
                   Align(
@@ -218,12 +218,13 @@ class _StartseiteState extends State<Startseite> {
                       ),
                     ],
                   ),
+                
                   Visibility(
                     visible: true,
                     child: ElevatedButton.icon(
                       onPressed: () {
                         print(statusList);
-                        saveStatus(statusList);
+                        saveStatus(statusList, dateTimeDay, timeOfDayTime);
                       },
                       icon: Icon(Icons.add, size: 18),
                       label: Text("Hinzufügen"),
@@ -239,7 +240,9 @@ class _StartseiteState extends State<Startseite> {
     );
   }
 
-  void saveStatus(List<StatusIcons> statusList) {
+  void saveStatus(List<StatusIcons> statusList, 
+  DateTime dateTimeDay,
+      TimeOfDay timeOfDayTime) {
     StatusIcons stimmung =
         statusList.firstWhere((element) => element.id == "stimmung");
     StatusIcons symptome =
@@ -247,60 +250,19 @@ class _StartseiteState extends State<Startseite> {
     StatusIcons stress =
         statusList.firstWhere((element) => element.id == "stress");
     Status status = new Status(
-        id: null, stimmung: stimmung, symptome: symptome, stress: stress);
+        userid: null,
+        datum: dateTimeDay,
+        uhrzeit: timeOfDayTime,
+        stimmung: stimmung,
+        symptome: symptome,
+        stress: stress);
     print(status.toJson());
     statusSetup(status);
   }
 }
 
-Widget boxWidget(String text, Icon icon, Color color, String string) {
-  return Expanded(
-    child: Container(
-      margin: EdgeInsets.only(top: 20, bottom: 5, left: 10, right: 10),
-      height: 70,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Container(
-            decoration: new BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-              icon: icon,
-              onPressed: () {
-                //functionToDatabase(string);
-              },
-            ),
-          ),
-          Text(
-            text,
-            style: TextStyle(fontSize: 12),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
 Future<void> statusSetup(Status status) async {
   CollectionReference statusref =
       FirebaseFirestore.instance.collection('status');
-  //DocumentReference statusref =FirebaseFirestore.instance.collection('status').doc('Test');
-  statusref.add({
-    'stimmung': status.stimmung.name,
-    'symptome': status.symptome.name,
-    'stress': status.stress.name,
-    'time': timeController.text,
-    'date': dateController.text,
-    'iconstimung': status.stimmung.iconData
-  });
-}
-
-void functionToDatabase(String string) {
-  //if(time!=null){
-  print(string);
-  //}else{
-  //  showDialog(context: context);
-  //}
+  statusref.add(status.toJson());
 }

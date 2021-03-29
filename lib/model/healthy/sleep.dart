@@ -1,35 +1,33 @@
-import 'package:epilepsia/model/healthy/sleepicon.dart';
+
+import 'package:epilepsia/model/healthy/stimmung.dart';
+
 
 class Sleep {
-  String id;
-  DateTime eingeschlafen;
-  DateTime aufgestanden;
-  StatusIcons schlaf;
+  String userid;
+  DateTime datum;
+  String dauerSchlaf;
+  StatusIcons sleepicon;
 
-  Sleep(
-      {this.id,
-      this.eingeschlafen,
-      this.aufgestanden,
-      this.schlaf});
+  Sleep({this.userid, this.datum, this.dauerSchlaf, this.sleepicon});
 
   factory Sleep.fromJson(Map<String, dynamic> data) {
-    DateTime dateTime = DateTime.parse(data['eingeschlafen']);
-    DateTime dateTime1 = DateTime.parse(data['aufgestanden']);
+    DateTime _datumfirebase = data['datum'].toDate();
+    var datum = data['datum'].toDate();
     return Sleep(
-      id: data['id'],
-      eingeschlafen: dateTime,
-      aufgestanden: dateTime1,
-      schlaf: StatusIcons.fromJson(data['schlaf']),
+      userid: data['id'],
+      datum: datum,
+      dauerSchlaf: data['dauerSchlaf'],
+      sleepicon: StatusIcons.fromJson(data['sleep']),
     );
   }
 
   Map<String, dynamic> toJson() {
-    Map _schlaf = this.schlaf != null ? this.schlaf.toJson() : null;
+    Map _sleep = this.sleepicon != null ? this.sleepicon.toJson() : null;
     return {
-      'id': id,
-      'eingeschlafen': eingeschlafen.toIso8601String(),
-      'aufgestanden': aufgestanden.toIso8601String(),
-      'schlaf': _schlaf,
+      'id': userid,
+      'datum': datum,
+      'dauerSchlaf' : dauerSchlaf,
+      'sleep': _sleep,
     };
   }
 }

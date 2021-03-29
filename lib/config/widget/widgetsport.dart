@@ -1,34 +1,42 @@
-import 'package:epilepsia/config/farben.dart';
+import 'package:epilepsia/model/healthy/stimmung.dart';
 import 'package:flutter/material.dart';
 
-class Widgetsport extends StatefulWidget {
-  const Widgetsport(Key key,this.text,this.icon, this.color, this.string) : super(key: key);
-  
-  final String text; 
-   final Icon icon;
-   final Color color;
-   final String string;
-   
+class SportWidget extends StatefulWidget {
+  const SportWidget(
+      Key key, this.id, this.text, this.iconData, this.color, this.statusList)
+      : super(key: key);
+
+  final String text;
+  final int iconData;
+  final Color color;
+  final String id;
+  final List<StatusIcons> statusList;
 
   @override
-  _WidgetsportState createState() => _WidgetsportState();
+  _SportWidgetState createState() => _SportWidgetState();
 }
 
-class _WidgetsportState extends State<Widgetsport> {
-     String text;
-    Icon icon; 
-    Color color;
-    String string;
-    bool change = false;
-     @override
+class _SportWidgetState extends State<SportWidget> {
+  String id;
+  String text;
+  int iconData;
+  Color color;
+  Border border;
+  bool change = false;
+
+  @override
   void initState() {
     text = widget.text;
-    icon = widget.icon;
+    iconData = widget.iconData;
     color = widget.color;
-    string =widget.string;
+    id = widget.id;
+    border = Border.all(
+      color: Colors.black,
+      width: 1,
+    );
+    print(text);
     super.initState();
   }
-
 
 
   @override
@@ -36,7 +44,6 @@ class _WidgetsportState extends State<Widgetsport> {
      return Expanded(
               child: Container(
                 decoration: BoxDecoration(color: color,border: Border.all(),borderRadius: BorderRadius.all(Radius.circular(20)),),
-              
                 margin:
                     EdgeInsets.only(top: 25, bottom: 2, left: 15, right: 15),
                 height: 90,
@@ -45,7 +52,7 @@ class _WidgetsportState extends State<Widgetsport> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
-        icon: icon,
+                        icon: Icon(IconData(iconData, fontFamily: 'MaterialIcons')),
         color: Colors.indigo[700],
       ),
                       Text(
@@ -56,19 +63,39 @@ class _WidgetsportState extends State<Widgetsport> {
                     ],
                   ),
                   onPressed: () {
-               setState(() {
-                 
-                 if(!change){
-                  change = true;
-                  color = dunkelblau;
-                 }else{
-                   change = false;
-                   color = widget.color;
-                 }
-                
-           },);          
-                //functionToDatabase(string);
-              },
+                  setState(
+                    () {
+                      StatusIcons statusIcon = new StatusIcons(
+                          id: id, color: color, name: text, iconData: iconData);
+                      if ((widget.statusList.singleWhere(
+                              (element) => element.id == statusIcon.id,
+                              orElse: () => null)) !=
+                          null) {
+                        print("Exist");
+                        if ((widget.statusList.singleWhere(
+                                (element) => element.name == statusIcon.name,
+                                orElse: () => null)) !=
+                            null) {
+                          change = false;
+                          color = widget.color;
+                          widget.statusList.removeWhere(
+                              (element) => element.name == statusIcon.name);
+                        }
+                      } else {
+                        print("not Exist");
+                        
+                          border = Border.all(
+                          color: Colors.red,
+                          width: 5,
+                        );
+                        }
+                        change = true;
+                        color = Colors.green[200];
+                        widget.statusList.add(statusIcon);
+                      }
+                    
+                  );
+                },
                 ),
               ),
             );
