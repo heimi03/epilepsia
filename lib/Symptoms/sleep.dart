@@ -84,9 +84,16 @@ class _SleepState extends State<SleepWidget> {
               );
               timeController.text = time.format(context);
               setState(() {
-                startDate = time;
-                hours = (endDate.hour - startDate.hour).toString();
-                minute = (endDate.minute - startDate.minute).toString();
+                if (startDate.hour <= endDate.hour) {
+                  hours = (endDate.hour - startDate.hour).toString();
+                } else {
+                  hours = (startDate.hour - endDate.hour).toString();
+                }
+                if (startDate.minute <= endDate.minute) {
+                  minute = (endDate.minute - startDate.minute).toString();
+                } else {
+                  minute = (startDate.minute - endDate.minute).toString();
+                }
               });
             },
           ),

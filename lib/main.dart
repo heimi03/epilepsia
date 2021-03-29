@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:epilepsia/Home/calendar.dart';
 import 'package:epilepsia/Home/diary.dart';
 import 'package:epilepsia/Home/home.dart';
 import 'package:epilepsia/Home/settings.dart';
 import 'package:epilepsia/config/farben.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart' hide Router;
 import 'config/router.dart';
@@ -38,15 +40,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final auth = FirebaseAuth.instance;
 
-    // AuthenticationService authenticationService =
+  // AuthenticationService authenticationService =
   //     AuthenticationService(firebaseAuth: FirebaseAuth.instance);
   // final GoogleSignIn googleSignIn = GoogleSignIn();
   String email;
   String password;
   String message = "";
   bool loginFail = false;
- 
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Passwort',
-                  hintText: 'Geben Sie ein sicheres Passwort ein.',
+                  hintText: 'Geben Sie ihr Passwort ein.',
                 ),
                 onChanged: (String value) {
                   password = value;
@@ -122,10 +124,9 @@ class _MyHomePageState extends State<MyHomePage> {
               decoration: BoxDecoration(
                   color: hellblau, borderRadius: BorderRadius.circular(5)),
               child: TextButton(
-                onPressed: () async {
-                  //login();
-                  Navigator.pushNamed(context, routePrimaryHome);
-
+                onPressed: () {
+                  login(email, password);
+                  //Navigator.pushNamed(context, routePrimaryHome);
                 },
                 child: Text(
                   'Login',
@@ -145,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
             TextButton(
               //Buttom to navigate -> SignUpView
               onPressed: () {
-              //  Navigator.pushNamed(context, routeHome);
+                Navigator.pushNamed(context, routeSignUp);
               },
               child: Text('Neuer Kunde? Erstellen Sie ein neues Konto'),
             ),
@@ -155,46 +156,78 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void login() async {
-    // var authReturn =
-    //     await authenticationService.signIn(email: email, password: password);
-    // if (authReturn == "Success") {
-    //   //Check if login was successfull
-    //   if (authenticationService.firebaseAuth.currentUser.emailVerified) {
-    //     //Check if account is Verified
-    //     Navigator.pushAndRemoveUntil(
-    //       context,
-    //       MaterialPageRoute(builder: (context) => Home()),
-    //       (Route<dynamic> route) => false,
-    //     );
-    //   } else {
-    //     //Send a verification Email
-    //     await authenticationService.firebaseAuth.currentUser
-    //         .sendEmailVerification();
-    //     showDialog(
-    //       context: context,
-    //       builder: (_) => AlertDialog(
-    //         title: Text('Account bestätigen!'),
-    //         content: Text(
-    //             'Überprüfen Sie Ihr Postfach und bestätigen Sie Ihr neues Konto!'),
-    //         actions: [
-    //           TextButton(
-    //             onPressed: () {
-    //               Navigator.of(context).pop();
-    //             },
-    //             child: Text(
-    //               "Verstanden",
-    //               style: TextStyle(color: hellblau),
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     );
-    //   }
-    // } else {
-    //   setState(() {
-    //     message = authReturn;
-    //   });
-    // }
+  void signUp(String email, String password) {
+    showDialog(context: context, builder: (_) => AlertDialog());
+    auth.createUserWithEmailAndPassword(email: email, password: password);
+  }
+
+  void login(String email, String password) async {
+    String errorMessage = '';
+    try {
+      await auth.signInWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch (e) {
+      errorMessage = e.message;
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+                title: Text('Es ist was schief gelaufen'),
+                content: Text(errorMessage),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      "Verstanden",
+                      style: TextStyle(color: hellblau),
+                    ),
+                  ),
+                ],
+              ));
+    }
+    if (errorMessage == '') {
+      Navigator.pushNamed(context, routePrimaryHome);
+      print('success');
+    }
   }
 }
+// var authReturn =
+//     await authenticationService.signIn(email: email, password: password);
+// if (authReturn == "Success") {
+//   //Check if login was successfull
+//   if (authenticationService.firebaseAuth.currentUser.emailVerified) {
+//     //Check if account is Verified
+//     Navigator.pushAndRemoveUntil(
+//       context,
+//       MaterialPageRoute(builder: (context) => Home()),
+//       (Route<dynamic> route) => false,
+//     );
+//   } else {
+//     //Send a verification Email
+//     await authenticationService.firebaseAuth.currentUser
+//         .sendEmailVerification();
+//     showDialog(
+//       context: context,
+//       builder: (_) => AlertDialog(
+//         title: Text('Account bestätigen!'),
+//         content: Text(
+//             'Überprüfen Sie Ihr Postfach und bestätigen Sie Ihr neues Konto!'),
+//         actions: [
+//           TextButton(
+//             onPressed: () {
+//               Navigator.of(context).pop();
+//             },
+//             child: Text(
+//               "Verstanden",
+//               style: TextStyle(color: hellblau),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// } else {
+//   setState(() {
+//     message = authReturn;
+//   });
+// }
